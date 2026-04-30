@@ -100,8 +100,8 @@ The user interface and user experience were planned and prototyped in Figma prio
 | Layer              | Technology              |
 | ------------------ | ----------------------- |
 | Frontend           | HTML5, CSS3, JavaScript |
-| Backend            | PHP                     |
-| Database           | MySQL                   |
+| Backend            | PHP ,myphpAdmin         |
+| Database           | Firebase                |
 | Design/Prototyping | Figma                   |
 | Version Control    | Git & GitHub            |
 
