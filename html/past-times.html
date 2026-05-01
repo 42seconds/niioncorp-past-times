@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Times — South Africa's Premium Pre-loved Boutique</title>
+<link rel="stylesheet" href="../css/styles.css">
+<script src="../javascript/script.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: LOGIN
+═══════════════════════════════════════════════ -->
+<div class="page active" id="page-login">
+  <div class="auth-layout">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-bg"></div>
+      <!-- Fashion mood collage -->
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;gap:0;">
+        <div style="flex:1;background:linear-gradient(to bottom, #3d2218, #1a0d08);display:flex;align-items:center;justify-content:center;font-size:120px;opacity:0.3;">👗</div>
+      </div>
+      <div style="position:absolute;top:40px;left:40px;z-index:3;">
+        <div class="logo-icon" style="background:#8b1a14;">P</div>
+      </div>
+      <!-- Floating fabric swatch -->
+      <div style="position:absolute;right:40px;bottom:120px;z-index:3;width:140px;height:140px;border-radius:12px;background:linear-gradient(135deg,#1a4a3a,#0d2a22);display:flex;align-items:center;justify-content:center;font-size:64px;">🧥</div>
+      <!-- Hero card -->
+      <div class="auth-hero-card" style="position:relative;z-index:3;">
+        <div class="overline">Sustainability First</div>
+        <h2>Preserving the past,<br>styling the future.</h2>
+      </div>
+    </div>
+    <!-- Right Panel -->
+    <div class="auth-right">
+      <div class="auth-logo">
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="navigate('explore')">
+          <div class="logo-icon">P</div>
+        </div>
+      </div>
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-subtitle">Sign in to manage your curated finds.</div>
+
+        <form method="POST" action="../php/AuthSystem/login.php">
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" name="username" required title="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" name="email" required  title="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="pw-row">
+            <input class="form-input" type="password" name="password" id="login-pw" required  title="password">
+            <button type="button" class="pw-toggle" onclick="togglePw('login-pw',this)">👁</button>
+          </div>
+        </div>
+
+        <!-- ✅ FIX: remove navigate() -->
+        <button class="btn btn-primary btn-lg" type="submit">Log In</button>
+
+      </form>
+      <div class="auth-divider">Or continue with</div>
+      <div class="social-btns">
+        <button class="social-btn"><span>G</span> Google</button>
+        <button class="social-btn"><span>🍎</span> Apple</button>
+      </div>
+
+      <div class="auth-footer-text">
+        New to Past Times? <a onclick="navigate('signup')">Sign Up.</a>
+      </div>
+
+      <div style="margin-top:40px;text-align:center;font-size:12px;color:var(--text-light);">
+        © 2026 Past Times Editorial Marketplace. All rights reserved.<br>
+        <span style="margin:0 8px;cursor:pointer;">PRIVACY</span>
+        <span style="margin:0 8px;cursor:pointer;">TERMS</span>
+        <span style="margin:0 8px;cursor:pointer;">CONTACT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SIGN UP
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-layout">
+    <div class="auth-left">
+      <div class="auth-left-bg" style="background:linear-gradient(160deg,#1a1a2e 0%,#0d0d0d 100%);"></div>
+      <div style="position:absolute;top:40px;left:40px;z-index:3;cursor:pointer;" onclick="navigate('login')">
+        <div class="logo-icon" style="background:#8b1a14;">P</div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:140px;opacity:0.12;">👜</div>
+      <div style="position:absolute;bottom:200px;left:40px;z-index:3;width:120px;height:120px;border-radius:10px;background:linear-gradient(135deg,#c0392b,#8b1a14);display:flex;align-items:center;justify-content:center;font-size:56px;">🧣</div>
+      <div class="auth-hero-card" style="position:relative;z-index:3;">
+        <h2 style="font-size:28px;">Timeless Style,<br><em style="color:var(--primary);font-style:italic;">Consciously</em> Shared.</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:10px;line-height:1.6;">Join a community of South African curators redefining the lifecycle of fashion.</p>
+      </div>
+    </div>
+    <div class="auth-right" style="padding:40px 56px;">
+      <div class="auth-title" style="font-size:30px;">Create Your Account</div>
+      <div class="auth-subtitle">Join South Africa's most conscious fashion community.</div>
+
+       <form method="POST" action="../php/AuthSystem/register.php">
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" name="fullName" required  title="fullname">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" name="email" required  title="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" name="username" required  title="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" name="phone" title="phone">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" name="password" required  title="password">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input class="form-input" type="password" name="confirmPassword" required  title="confirm password">
+        </div>
+
+        <!-- ✅ FIX -->
+        <button class="btn btn-primary btn-lg" type="submit">Join Past Times</button>
+
+      </form>
+      <div class="auth-footer-text">Already have an account? <a onclick="navigate('login')">Log In</a></div>
+
+      <div class="auth-trust-badges">
+        <div class="trust-item">🔒 SECURED ESCROW</div>
+        <div class="trust-item">✅ VERIFIED SUSTAINABLE</div>
+        <div class="trust-item">📦 PUDO INTEGRATED</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: EXPLORE (HOME)
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-explore">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link active" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-overline">South Africa's Premium Pre-loved Boutique</div>
+      <h1 class="hero-title">Fashion that tells a <em>story</em></h1>
+      <p class="hero-subtitle">Discover curated pre-loved pieces from South Africa's most conscious fashion community. Every purchase is escrow protected.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary btn-lg" style="width:auto;" onclick="navigate('explore')">Shop Now</button>
+        <button class="btn btn-secondary btn-lg" style="width:auto;border-color:rgba(255,255,255,0.3);color:white;" onclick="navigate('create-listing')">Start Selling</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust strip -->
+  <div class="trust-strip">
+    <div class="trust-item-strip"><span class="trust-icon">🔒</span> Secure Escrow via Ozow</div>
+    <div class="trust-item-strip"><span class="trust-icon">📦</span> PUDO Locker Delivery</div>
+    <div class="trust-item-strip"><span class="trust-icon">⚡</span> Aramex Express Available</div>
+    <div class="trust-item-strip"><span class="trust-icon">🌿</span> Proudly South African</div>
+  </div>
+
+  <!-- Explore section -->
+  <div class="explore-section">
+    <div class="explore-section-title">Explore Curated Finds</div>
+    <div class="explore-section-sub">Handpicked pre-loved treasures from verified sellers across South Africa</div>
+
+    <!-- Categories -->
+    <div class="category-chips">
+      <div class="category-chip active" onclick="filterCategory(this)">All Items</div>
+      <div class="category-chip" onclick="filterCategory(this)">Clothing</div>
+      <div class="category-chip" onclick="filterCategory(this)">Accessories</div>
+      <div class="category-chip" onclick="filterCategory(this)">Footwear</div>
+      <div class="category-chip" onclick="filterCategory(this)">Outerwear</div>
+      <div class="category-chip" onclick="filterCategory(this)">Jewelry</div>
+      <div class="category-chip" onclick="filterCategory(this)">Vintage</div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid">
+      <!-- Card 1 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-new">New Arrival</span></div>
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">🧥</div>
+        <div class="product-info">
+          <div class="product-name">Classic Wool Trench Coat</div>
+          <div class="product-meta">Outerwear • Size M</div>
+          <div class="product-price">R 2,450</div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👜</div>
+        <div class="product-info">
+          <div class="product-name">Minimalist Leather Bag</div>
+          <div class="product-meta">Accessories • Authentic</div>
+          <div class="product-price">R 850</div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-price-drop">↓ Price Drop</span></div>
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">⌚</div>
+        <div class="product-info">
+          <div class="product-name">Vintage Gold Timepiece</div>
+          <div class="product-meta">Jewelry • Original Box</div>
+          <div><span class="product-price">R 1,200</span><span class="product-price-orig">R 1,600</span></div>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👟</div>
+        <div class="product-info">
+          <div class="product-name">Classic White Sneakers</div>
+          <div class="product-meta">Footwear • UK 9</div>
+          <div class="product-price">R 650</div>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👖</div>
+        <div class="product-info">
+          <div class="product-name">Indigo Dyed Trousers</div>
+          <div class="product-meta">Pants • Size 32</div>
+          <div class="product-price">R 450</div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-price-drop">↓ Price Drop</span></div>
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">🧣</div>
+        <div class="product-info">
+          <div class="product-name">Vintage Wool Trench</div>
+          <div class="product-meta">Size M • Cape Town</div>
+          <div><span class="product-price">R 1,450</span><span class="product-price-orig">R 1,800</span></div>
+        </div>
+      </div>
+      <!-- Card 7 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👜</div>
+        <div class="product-info">
+          <div class="product-name">Artisan Leather Tote</div>
+          <div class="product-meta">Authentic • Johannesburg</div>
+          <div class="product-price">R 2,200</div>
+        </div>
+      </div>
+      <!-- Card 8 -->
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-price-drop">↓ Price Drop</span></div>
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👟</div>
+        <div class="product-info">
+          <div class="product-name">Retro Sneakers</div>
+          <div class="product-meta">UK 8 • Durban</div>
+          <div><span class="product-price">R 950</span><span class="product-price-orig">R 1,100</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">Past Times</div>
+        <div class="footer-tagline">© 2026 Past Times. South Africa's Premium<br>Pre-loved Boutique. Redefining sustainable fashion one unique piece at a time.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Marketplace</h4>
+        <a>Secure Escrow via Ozow</a>
+        <a>Paxi Points</a>
+        <a>PUDO Lockers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a>Sustainability Manifesto</a>
+        <a>Terms of Service</a>
+        <a>Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Past Times Marketplace</span>
+      <div class="footer-badges">
+        <span>🔒 SECURE</span>
+        <span>🚐 PUDO</span>
+        <span>🌿 PROUDLY SA</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: PRODUCT DETAIL
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-product-detail">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <div class="product-detail-layout">
+    <!-- Gallery -->
+    <div>
+      <div class="product-gallery-main">🧥</div>
+      <div class="gallery-thumbs">
+        <div class="gallery-thumb active">🧥</div>
+        <div class="gallery-thumb">2</div>
+        <div class="gallery-thumb">3</div>
+        <div class="gallery-thumb">4</div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div style="position:relative;">
+      <div class="escrow-note">🛡 ESCROW PROTECTED</div>
+      <div class="product-detail-brand">ZARA PREMIUM</div>
+      <h1 class="product-detail-title">Organic Silk Blend Midi Dress</h1>
+      <div class="product-detail-price">R 1,450.00</div>
+
+      <div class="condition-box">
+        <div class="condition-row">
+          <span style="font-size:13px;font-weight:600;">Condition</span>
+          <span class="badge badge-teal">NEW WITH TAGS</span>
+        </div>
+        <div class="condition-desc">Purchased for an event and never worn. Still in original packaging with all tags attached. Made from 100% sustainable silk blend.</div>
+      </div>
+
+      <div class="seller-box" onclick="navigate('seller-profile')">
+        <div class="seller-avatar">LC</div>
+        <div style="flex:1;">
+          <div class="seller-name">@Lindi_Curates</div>
+          <div class="seller-stats">⭐⭐⭐⭐⭐ (128 reviews)</div>
+          <div class="seller-response">98% RESPONSE RATE • ACTIVE TODAY</div>
+        </div>
+        <div>💬</div>
+      </div>
+
+      <div class="shipping-section">
+        <h4>Shipping Options</h4>
+        <div class="shipping-grid">
+          <div class="shipping-option active">
+            <div>📦</div>
+            <div class="shipping-name">Aramex Express</div>
+            <div class="shipping-days">2-3 Business Days</div>
+          </div>
+          <div class="shipping-option">
+            <div>🚐</div>
+            <div class="shipping-name">Paxi Point</div>
+            <div class="shipping-days">5-7 Business Days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-btns">
+        <button class="btn btn-primary btn-lg">Buy Now</button>
+        <div class="action-row">
+          <button class="btn btn-secondary">📦 Add to Bundle</button>
+          <button class="btn btn-teal">💬 Message</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer" style="margin-top:40px;">
+    <div class="footer-bottom">
+      <span class="footer-brand-name">Past Times</span>
+      <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
+        <span>Secure Escrow via Ozow</span>
+        <span>Paxi Points</span>
+        <span>PUDO Lockers</span>
+        <span>Sustainability Manifesto</span>
+        <span>Terms of Service</span>
+      </div>
+      <div class="footer-badges">🔒 🚐 🌿 PROUDLY SOUTH AFRICAN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SELLER DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-seller-dashboard">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Seller Studio</div>
+        <div class="sidebar-subtitle">Verified Curator</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-link active">🏪 My Shop</div>
+        <div class="sidebar-link" onclick="navigate('order-management')">📦 Orders</div>
+        <div class="sidebar-link">💰 Earnings</div>
+        <div class="sidebar-link" onclick="navigate('messages')">💬 Messages</div>
+        <div class="sidebar-link" onclick="navigate('settings')">⚙️ Settings</div>
+      </div>
+      <div class="sidebar-footer">
+        <a>❓ HELP CENTER</a>
+        <a onclick="navigate('login')">🚪 LOG OUT</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+      <div class="dashboard-top">
+        <!-- Wallet Card -->
+        <div>
+          <div class="wallet-card">
+            <div class="wallet-label">YAGA WALLET BALANCE</div>
+            <div class="wallet-amount">R 4,850.00</div>
+            <div class="escrow-badge">🛡 Escrow Protected</div>
+            <div class="wallet-btns">
+              <button class="wallet-btn wallet-btn-primary">Payout</button>
+              <button class="wallet-btn wallet-btn-secondary">History</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Followers</div>
+              <div class="stat-value">1,204</div>
+            </div>
+            <div class="stat-icon stat-icon-teal">👥</div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Active Listings</div>
+              <div class="stat-value">42</div>
+            </div>
+            <div class="stat-icon stat-icon-orange">📋</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Management -->
+      <div>
+        <div class="section-header">
+          <h2 class="section-title" style="margin:0;">Orders Management</h2>
+          <a class="view-all" onclick="navigate('order-management')">View all →</a>
+        </div>
+        <div class="order-tabs">
+          <button class="order-tab active">New (3)</button>
+          <button class="order-tab" onclick="switchTab(this)">To Ship (1)</button>
+          <button class="order-tab" onclick="switchTab(this)">Shipped (8)</button>
+          <button class="order-tab" onclick="switchTab(this)">Completed (124)</button>
+        </div>
+
+        <div class="order-item">
+          <span class="badge badge-new">NEW</span>
+          <div class="order-thumb">👜</div>
+          <div class="order-info">
+            <div class="order-name">Vintage Leather Satchel</div>
+            <div class="order-meta">Order #YG-99201 • Today, 14:20</div>
+            <div class="order-ship">📦 Paxi Point-to-Point &nbsp; 👤 Lerato M.</div>
+          </div>
+          <div class="order-price">R 1,250</div>
+          <div class="order-actions">
+            <button class="btn btn-primary btn-sm">Accept Order</button>
+            <button class="btn btn-secondary btn-sm">Message</button>
+          </div>
+        </div>
+
+        <div class="order-item">
+          <span class="badge badge-new">NEW</span>
+          <div class="order-thumb">⌚</div>
+          <div class="order-info">
+            <div class="order-name">Classic Minimalist Watch</div>
+            <div class="order-meta">Order #YG-99188 • Yesterday, 18:05</div>
+            <div class="order-ship">🔒 PUDO Locker &nbsp; 👤 Johan S.</div>
+          </div>
+          <div class="order-price">R 850</div>
+          <div class="order-actions">
+            <button class="btn btn-primary btn-sm">Accept Order</button>
+            <button class="btn btn-secondary btn-sm">Message</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row: Chart + Shop Health -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div style="font-weight:700;font-size:15px;">Weekly Performance</div>
+            </div>
+            <div class="chart-label">+12.5% vs last week</div>
+          </div>
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:40%;background:var(--border);"></div>
+            <div class="chart-bar" style="height:55%;background:var(--border);"></div>
+            <div class="chart-bar" style="height:70%;background:var(--border);"></div>
+            <div class="chart-bar" style="height:95%;background:var(--primary);"></div>
+            <div class="chart-bar" style="height:45%;background:var(--border);"></div>
+            <div class="chart-bar" style="height:65%;background:var(--border);"></div>
+            <div class="chart-bar" style="height:85%;background:var(--primary-light);"></div>
+          </div>
+          <div class="chart-days">
+            <div class="chart-day">MON</div><div class="chart-day">TUE</div><div class="chart-day">WED</div><div class="chart-day">THU</div><div class="chart-day">FRI</div><div class="chart-day">SAT</div><div class="chart-day">SUN</div>
+          </div>
+        </div>
+
+        <div class="shop-health">
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;">Shop Health</div>
+          <div class="health-bar-wrap">
+            <div class="health-bar" style="width:94%;"></div>
+          </div>
+          <div class="health-score">94% Excellent</div>
+          <div class="health-tip">"Your response time is faster than 80% of sellers this week! Keep it up."</div>
+          <div class="top-seller-banner">
+            <div>
+              <div class="ts-title">⭐ Top Rated Seller</div>
+              <div class="ts-sub">Maintain this status for 5% lower fees.</div>
+            </div>
+            <div style="font-size:28px;">🏆</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <div class="add-item-fab">
+    <button class="btn btn-primary" onclick="navigate('create-listing')">+ Add Item</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: MESSAGES
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-messages">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Shop</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+      <span class="nav-link active">Messages</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <div class="messages-layout">
+    <!-- Inbox -->
+    <div class="inbox-panel">
+      <div class="inbox-header">
+        <div class="inbox-title">Inbox</div>
+        <div class="inbox-search">
+          <span>🔍</span>
+          <input placeholder="Search buyers & sellers">
+        </div>
+      </div>
+      <div class="convo-list">
+        <div class="convo-item active">
+          <div class="convo-avatar">SM</div>
+          <div class="convo-info">
+            <div style="display:flex;justify-content:space-between;">
+              <div class="convo-name">Sarah M.</div>
+              <div class="convo-time">14:02</div>
+            </div>
+            <div class="convo-preview">Is the vintage blazer still available?</div>
+            <div class="convo-thumb-ref">🧥 Vintage Wool Blazer...</div>
+          </div>
+          <div class="unread-dot"></div>
+        </div>
+        <div class="convo-item">
+          <div class="convo-avatar">DK</div>
+          <div class="convo-info">
+            <div style="display:flex;justify-content:space-between;">
+              <div class="convo-name">David K.</div>
+              <div class="convo-time">Yesterday</div>
+            </div>
+            <div class="convo-preview">Perfect, I'll track the PUDO locker.</div>
+          </div>
+        </div>
+        <div class="convo-item">
+          <div class="convo-avatar">LL</div>
+          <div class="convo-info">
+            <div style="display:flex;justify-content:space-between;">
+              <div class="convo-name">Lebo Lebo</div>
+              <div class="convo-time">Mon</div>
+            </div>
+            <div class="convo-preview">Would you consider R450 for the boots?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div class="convo-avatar" style="width:38px;height:38px;font-size:13px;">SM</div>
+        <div>
+          <div class="chat-contact-name">Sarah M.</div>
+          <div class="chat-online">ONLINE NOW</div>
+        </div>
+        <div class="item-preview-chip">
+          <div class="item-chip-img">🧥</div>
+          <div>
+            <div class="item-chip-name">Vintage Wool Blazer</div>
+            <div class="item-chip-price">R550.00</div>
+          </div>
+          <button class="btn btn-primary btn-sm">BUY NOW</button>
+        </div>
+      </div>
+
+      <div class="escrow-banner">
+        <div class="escrow-banner-title">🛡 Stay Protected with Escrow</div>
+        <div class="escrow-banner-text">Always pay through the app. Our Ozow escrow system keeps your money safe until you receive your item.</div>
+      </div>
+
+      <div class="chat-messages">
+        <div class="chat-date">TODAY</div>
+
+        <div class="msg-row">
+          <div class="msg-avatar">SM</div>
+          <div>
+            <div class="msg-bubble received">Hi there! I saw you liked the blazer. Are you still interested?</div>
+            <div class="msg-time">13:45</div>
+          </div>
+        </div>
+
+        <div class="msg-row sent">
+          <div class="msg-avatar">Me</div>
+          <div>
+            <div class="msg-bubble sent">Hey! Yes, I love it. Does it have any wear on the elbows?</div>
+            <div class="msg-time" style="text-align:left;">13:58</div>
+          </div>
+        </div>
+
+        <div class="msg-row">
+          <div class="msg-avatar">SM</div>
+          <div>
+            <div class="msg-bubble received">It's in great condition! Here's a close up of the fabric for you.</div>
+            <div class="msg-img">🧥</div>
+            <div class="msg-time">14:01</div>
+          </div>
+        </div>
+
+        <div class="msg-row">
+          <div class="msg-avatar">SM</div>
+          <div>
+            <div class="msg-bubble received">Is the vintage blazer still available?</div>
+            <div class="msg-time">Just now</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="chat-input-area">
+          <span class="attach-btn">➕</span>
+          <span class="attach-btn">🖼</span>
+          <input class="chat-input" placeholder="Type a message..." id="chat-input-field">
+          <button class="send-btn" onclick="sendMsg()">➤</button>
+        </div>
+        <div class="chat-safety-note">Never share your phone number or email. Keep conversations here.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ADMIN PORTAL
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn">AD</div>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <div class="admin-header">
+      <div class="admin-title">Listing Validation</div>
+      <div class="admin-subtitle">Review and moderate newly created marketplace listings.</div>
+    </div>
+
+    <div class="admin-stats">
+      <div class="admin-stat pending-stat">
+        <div class="admin-stat-icon">📋</div>
+        <div>
+          <div class="admin-stat-value">142</div>
+          <div class="admin-stat-label">Pending Reviews</div>
+        </div>
+      </div>
+      <div class="admin-stat approved-stat">
+        <div class="admin-stat-icon">✅</div>
+        <div>
+          <div class="admin-stat-value">89</div>
+          <div class="admin-stat-label">Approved Today</div>
+        </div>
+      </div>
+      <div class="admin-stat rejected-stat">
+        <div class="admin-stat-icon">❌</div>
+        <div>
+          <div class="admin-stat-value">12</div>
+          <div class="admin-stat-label">Rejected Today</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Listings Table -->
+      <div>
+        <div class="listings-table">
+          <div class="table-header">
+            <div>LISTING</div>
+            <div>PRICE</div>
+            <div>AI STATUS</div>
+            <div>SUBMITTED</div>
+            <div>ACTIONS</div>
+          </div>
+          <!-- Row 1 -->
+          <div class="table-row">
+            <div class="listing-thumb-wrap">
+              <div class="listing-thumb">👢</div>
+              <div>
+                <div class="listing-name">Heritage Leather Boots</div>
+                <div class="listing-cat">Men's Apparel • Vintage</div>
+              </div>
+            </div>
+            <div class="listing-price">R 2,450</div>
+            <div><span class="badge badge-clean">✦ Clean</span></div>
+            <div style="font-size:13px;color:var(--text-muted);">2 mins ago</div>
+            <div class="action-icons">
+              <div class="action-icon approve">✓</div>
+              <div class="action-icon reject">✕</div>
+              <div class="action-icon view">👁</div>
+            </div>
+          </div>
+          <!-- Row 2 - Selected -->
+          <div class="table-row selected" onclick="selectListing(this)">
+            <div class="listing-thumb-wrap">
+              <div class="listing-thumb">⌚</div>
+              <div>
+                <div class="listing-name">Minimalist Ceramic Watch</div>
+                <div class="listing-cat">Accessories • Pre-loved</div>
+              </div>
+            </div>
+            <div class="listing-price">R 1,100</div>
+            <div><span class="badge badge-flag">▲ Flagged: Low Quality</span></div>
+            <div style="font-size:13px;color:var(--text-muted);">14 mins ago</div>
+            <div class="action-icons">
+              <div class="action-icon approve">✓</div>
+              <div class="action-icon reject">✕</div>
+              <div class="action-icon view">👁</div>
+            </div>
+          </div>
+          <!-- Row 3 -->
+          <div class="table-row">
+            <div class="listing-thumb-wrap">
+              <div class="listing-thumb">🎙</div>
+              <div>
+                <div class="listing-name">Studio Condenser Mic</div>
+                <div class="listing-cat">Electronics • New</div>
+              </div>
+            </div>
+            <div class="listing-price">R 3,200</div>
+            <div><span class="badge badge-flag-risk">🚩 Flagged: Price Risk</span></div>
+            <div style="font-size:13px;color:var(--text-muted);">45 mins ago</div>
+            <div class="action-icons">
+              <div class="action-icon approve">✓</div>
+              <div class="action-icon reject">✕</div>
+              <div class="action-icon view">👁</div>
+            </div>
+          </div>
+          <!-- Row 4 -->
+          <div class="table-row">
+            <div class="listing-thumb-wrap">
+              <div class="listing-thumb">🧶</div>
+              <div>
+                <div class="listing-name">Handmade Wool Cardigan</div>
+                <div class="listing-cat">Apparel • Handcrafted</div>
+              </div>
+            </div>
+            <div class="listing-price">R 850</div>
+            <div><span class="badge badge-clean">✦ Clean</span></div>
+            <div style="font-size:13px;color:var(--text-muted);">1 hour ago</div>
+            <div class="action-icons">
+              <div class="action-icon approve">✓</div>
+              <div class="action-icon reject">✕</div>
+              <div class="action-icon view">👁</div>
+            </div>
+          </div>
+          <div class="table-pagination">
+            <span style="font-size:13px;color:var(--text-muted);margin-right:16px;">Showing 4 of 142 pending items</span>
+            <button class="btn btn-secondary btn-sm">Previous</button>
+            <button class="btn btn-secondary btn-sm">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="admin-sidebar">
+        <!-- AI Insights -->
+        <div class="ai-insights-card">
+          <div class="ai-card-header">
+            <div class="ai-card-title">🤖 AI Insights</div>
+            <div class="ai-active">ACTIVE</div>
+          </div>
+          <div class="ai-selected">Selected: Ceramic Watch</div>
+          <div class="ai-flagged">⚠️ FLAGGED: QUALITY & RELIABILITY</div>
+          <div class="ai-check">
+            <div class="ai-check-label">Stock Photo Match</div>
+            <div class="ai-check-desc">Image matches 4 databases. High probability of non-original content.</div>
+          </div>
+          <div class="ai-check">
+            <div class="ai-check-label">Category Mismatch</div>
+            <div class="ai-check-desc">"Accessories" detected but visual AI suggests "Electronics/Smartwatch".</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;">Request Manual Deep Scan</button>
+        </div>
+
+        <!-- Escrow Safety -->
+        <div class="escrow-safety-card">
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--teal);">🛡 Escrow Safety</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">Every transaction is protected. Payments are held in our secure escrow vault until the buyer confirms receipt.</div>
+          <div class="admin-checklist">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:8px;">ADMIN CHECKLIST</div>
+            <div class="admin-check-item">✅ Image clarity</div>
+            <div class="admin-check-item">✅ Accurate category</div>
+            <div class="admin-check-item">✅ Price realism</div>
+          </div>
+        </div>
+
+        <!-- Prohibited Items -->
+        <div class="prohibited-card">
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;color:var(--primary);">⚠️ Prohibited Items</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Reject listings immediately if they contain:</div>
+          <ul class="prohibited-list">
+            <li>Counterfeit Designer Goods</li>
+            <li>Restricted Chemicals</li>
+            <li>Unauthorized Electronics</li>
+            <li>Stock Photo Only Listings</li>
+          </ul>
+          <a style="color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;display:block;">FULL POLICY GUIDE</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: CREATE LISTING
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-create-listing">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link active" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <div class="listing-layout">
+    <h1 class="listing-title">Create Your Listing</h1>
+    <p class="listing-subtitle">Turn your pre-loved treasures into someone else's new favorite find. Our editorial-style marketplace ensures your items get the spotlight they deserve.</p>
+
+    <!-- Visual Gallery -->
+    <div class="gallery-upload">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <div style="font-weight:700;font-size:16px;">Visual Gallery</div>
+          <div style="font-size:13px;color:var(--text-muted);">Upload up to 6 high-quality photos. Show the details!</div>
+        </div>
+        <div class="gallery-count">0 / 6 PHOTOS</div>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-cover">
+          <div style="font-size:32px;margin-bottom:8px;">📷</div>
+          <div style="font-weight:600;font-size:13px;">Cover Image</div>
+          <div style="font-size:12px;color:var(--text-muted);">First photo is your hero</div>
+        </div>
+        <div class="gallery-cell">➕</div>
+        <div class="gallery-cell">➕</div>
+        <div class="gallery-cell">➕</div>
+        <div class="gallery-cell">➕</div>
+      </div>
+      <div class="gallery-extra">
+        <div class="gallery-extra-cell">➕</div>
+      </div>
+    </div>
+
+    <!-- Item Details -->
+    <div class="listing-section">
+      <div class="listing-section-title">Item Details</div>
+      <div class="form-group">
+        <label class="form-label">LISTING TITLE</label>
+        <input class="form-input" placeholder="e.g. Vintage 90s Oversized Wool Blazer">
+      </div>
+      <div class="form-group">
+        <label class="form-label">STORY & DESCRIPTION</label>
+        <textarea class="form-input" rows="4" placeholder="Tell the story of this item. Mention materials, fit, and any unique quirks..." style="resize:vertical;"></textarea>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label class="form-label">CATEGORY</label>
+          <select class="form-input" title="category">
+            <option>Select Category</option>
+            <option>Clothing</option>
+            <option>Accessories</option>
+            <option>Footwear</option>
+            <option>Outerwear</option>
+            <option>Jewelry</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CONDITION</label>
+          <select class="form-input" title="condition">
+            <option>Select Condition</option>
+            <option>New with Tags</option>
+            <option>Like New</option>
+            <option>Good</option>
+            <option>Fair</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price & Delivery -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="listing-section">
+        <div class="listing-section-title">Set Your Price</div>
+        <div class="price-input-wrap">
+          <span class="price-prefix">R</span>
+          <input class="form-input price-input" type="number" value="0.00" step="50" min="0" title="price">
+        </div>
+        <div class="zero-fees-chip">
+          🌿 <div><div style="font-weight:700;">Zero Selling Fees</div><div style="font-size:12px;">Keep 100% of what you earn. We believe in sustainable circularity.</div></div>
+        </div>
+      </div>
+      <div class="listing-section">
+        <div class="listing-section-title">Delivery Options</div>
+        <div class="delivery-grid">
+          <div class="delivery-option checked" onclick="toggleDelivery(this)">
+            <div class="delivery-icon-name">📦 Paxi (Pep to Pep)</div>
+            <div class="checkbox-custom">✓</div>
+          </div>
+          <div class="delivery-option checked" onclick="toggleDelivery(this)">
+            <div class="delivery-icon-name">🔒 PUDO Locker</div>
+            <div class="checkbox-custom">✓</div>
+          </div>
+          <div class="delivery-option" onclick="toggleDelivery(this)">
+            <div class="delivery-icon-name">⚡ Aramex Express</div>
+            <div class="checkbox-custom"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="escrow-notice">
+      🛡 Your sale is protected by <strong>South African Escrow</strong>. Funds are only released once the buyer confirms delivery.
+    </div>
+
+    <div class="publish-section" style="margin-top:24px;">
+      <button class="btn btn-primary btn-lg" style="max-width:400px;" onclick="navigate('seller-dashboard')">Publish My Item →</button>
+      <div class="publish-disclaimer">By listing, you agree to our Terms of Service and confirm this item is authentic and correctly described.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-bottom">
+      <span class="footer-brand-name">Past Times</span>
+      <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
+        <span>Secure Escrow via Ozow</span>
+        <span>Sustainability Manifesto</span>
+        <span>Terms of Service</span>
+      </div>
+      <div class="footer-badges">🌿 PROUDLY SOUTH AFRICAN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SELLER PROFILE
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-seller-profile">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link active" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <div class="profile-layout">
+    <!-- Header Card -->
+    <div class="profile-header-card">
+      <div class="profile-avatar">
+        VC
+        <div class="verified-badge">✓</div>
+      </div>
+      <div>
+        <h1 class="profile-name">@vintage_curator</h1>
+        <div class="profile-rating"><span class="stars">★★★★★</span> 4.9 (124 reviews)</div>
+        <div class="profile-location">📍 Cape Town</div>
+        <div class="profile-follow-stats">
+          <div class="follow-stat">1.2k <span>Followers</span></div>
+          <div class="follow-stat">452 <span>Following</span></div>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-primary">Follow</button>
+        <button class="btn btn-secondary">✉️ Message</button>
+      </div>
+
+      <!-- Sustainability Impact -->
+      <div class="sustainability-card">
+        <div class="sus-title">🌿 Sustainability Impact</div>
+        <div class="sus-stats">
+          <div>
+            <div class="sus-stat-val">25</div>
+            <div class="sus-stat-label">ITEMS RE-HOMED</div>
+          </div>
+          <div>
+            <div class="sus-stat-val">112kg</div>
+            <div class="sus-stat-label">CO2 SAVED</div>
+          </div>
+        </div>
+        <div class="sus-bio">Curating rare vintage gems and premium pre-loved pieces from the heart of the Mother City. Dedicated to circular fashion and conscious consumption.</div>
+      </div>
+    </div>
+
+    <!-- Seller Spotlight Banner -->
+    <div class="spotlight-banner">
+      <div class="secure-escrow-chip">🛡 Secure Escrow — Protected via Ozow</div>
+      <div>
+        <div class="spotlight-label">SELLER SPOTLIGHT</div>
+        <div class="spotlight-title">The Autumn Edit 2024</div>
+      </div>
+    </div>
+
+    <!-- Active Listings -->
+    <div style="margin-bottom:16px;">
+      <h2 style="font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:2px;">Active Listings</h2>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Shop the curator's exclusive collection</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="listings-tabs">
+          <div class="listings-tab active">All Items</div>
+          <div class="listings-tab" onclick="switchListTab(this)">Clothing</div>
+          <div class="listings-tab" onclick="switchListTab(this)">Accessories</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fav-grid">
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-new">New Arrival</span></div>
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">🧥</div>
+        <div class="product-info">
+          <div class="product-name">Classic Wool Trench Coat</div>
+          <div class="product-meta">Outerwear • Size M</div>
+          <div class="product-price">R 2,450</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👜</div>
+        <div class="product-info">
+          <div class="product-name">Minimalist Leather Bag</div>
+          <div class="product-meta">Accessories</div>
+          <div class="product-price">R 850</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">⌚</div>
+        <div class="product-info">
+          <div class="product-name">Vintage Gold Timepiece</div>
+          <div class="product-meta">Jewelry</div>
+          <div class="product-price">R 1,200</div>
+        </div>
+      </div>
+      <!-- Eco card -->
+      <div class="eco-card">
+        <div class="eco-icon">🌿</div>
+        <div class="eco-title">Better for the Planet</div>
+        <div class="eco-desc">By buying from @vintage_curator, you've helped save over 4,000 liters of water compared to buying new.</div>
+        <div class="eco-link">LEARN ABOUT OUR IMPACT</div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👟</div>
+        <div class="product-info">
+          <div class="product-name">Classic White Sneakers</div>
+          <div class="product-meta">Footwear • UK 9</div>
+          <div class="product-price">R 650</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">🤍</button>
+        <div class="product-img-placeholder">👖</div>
+        <div class="product-info">
+          <div class="product-name">Indigo Dyed Trousers</div>
+          <div class="product-meta">Pants • Size 32</div>
+          <div class="product-price">R 450</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-bottom">
+      <span class="footer-brand-name">Past Times</span>
+      <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
+        <span>Secure Escrow via Ozow</span><span>Paxi Points</span><span>PUDO Lockers</span><span>Sustainability Manifesto</span><span>Terms of Service</span>
+      </div>
+      <div class="footer-badges">🌿 PROUDLY SOUTH AFRICAN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: MY FAVORITES
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-favorites">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link active">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn" onclick="navigate('settings')">LM</div>
+    </div>
+  </div>
+
+  <div class="favorites-layout">
+    <h1 class="favorites-title">My Favorites</h1>
+    <div class="favorites-subtitle">A personal gallery of unique pieces you've curated from across South Africa.</div>
+
+    <div class="favorites-toolbar">
+      <div class="fav-search">
+        <span>🔍</span>
+        <input placeholder="Search your wishlist...">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;color:var(--text-muted);">SORT BY</span>
+        <div class="sort-btns">
+          <button class="sort-btn active" onclick="switchSort(this)">Recently Added</button>
+          <button class="sort-btn" onclick="switchSort(this)">Price: Low to High</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fav-grid">
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-price-drop">↓ PRICE DROP</span></div>
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">🧥</div>
+        <div class="product-info">
+          <div class="product-name">Vintage Wool Trench</div>
+          <div class="product-meta">Size M • Cape Town</div>
+          <div><span class="product-price">R1,450</span><span class="product-price-orig">R1,800</span></div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">👜</div>
+        <div class="product-info">
+          <div class="product-name">Artisan Leather Tote</div>
+          <div class="product-meta">Authentic • Johannesburg</div>
+          <div class="product-price">R2,200</div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <div class="badge-overlay"><span class="badge badge-price-drop">↓ PRICE DROP</span></div>
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">👟</div>
+        <div class="product-info">
+          <div class="product-name">Retro Sneakers</div>
+          <div class="product-meta">UK 8 • Durban</div>
+          <div><span class="product-price">R950</span><span class="product-price-orig">R1,100</span></div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Buy Now</button>
+        </div>
+      </div>
+      <div class="product-card" onclick="navigate('product-detail')">
+        <button class="heart-btn">❤️</button>
+        <div class="product-img-placeholder">⌚</div>
+        <div class="product-info">
+          <div class="product-name">Minimalist Watch</div>
+          <div class="product-meta">Original Box • Pretoria</div>
+          <div class="product-price">R3,500</div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peace of Mind -->
+    <div class="peace-of-mind">
+      <div class="pom-text">
+        <h3>Shop with Peace of Mind</h3>
+        <p>Every purchase is protected by our secure Ozow Escrow system. Funds are only released to the seller once you've received and verified your item.</p>
+      </div>
+      <div class="pom-badges">
+        <span class="badge badge-teal">🔒 SECURE ESCROW</span>
+        <span class="badge badge-teal">📦 PUDO TRACKED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-bottom">
+      <span class="footer-brand-name">Past Times</span>
+      <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
+        <span>Secure Escrow via Ozow</span><span>Paxi Points</span><span>PUDO Lockers</span><span>Sustainability Manifesto</span><span>Terms of Service</span>
+      </div>
+      <div class="footer-badges">🌿 PROUDLY SOUTH AFRICAN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SETTINGS
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-settings">
+  <div class="navbar">
+    <div class="navbar-brand" onclick="navigate('explore')">
+      <div class="logo-icon">P</div>
+      <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+    <div class="navbar-nav">
+      <span class="nav-link" onclick="navigate('explore')">Explore</span>
+      <span class="nav-link active" onclick="navigate('favorites')">Favorites</span>
+      <span class="nav-link" onclick="navigate('create-listing')">Sell</span>
+    </div>
+    <div class="navbar-actions">
+      <div class="icon-btn" onclick="navigate('favorites')">🛒</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar-btn">LM</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px);">
+    <!-- Left nav -->
+    <div style="background:white;border-right:1px solid var(--border);padding:32px 0;">
+      <div style="padding:0 24px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;">
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:700;">Settings</div>
+      </div>
+      <div class="settings-nav-link active" onclick="switchSettingsSection(this,'s-profile')">👤 Profile Info</div>
+      <div class="settings-nav-link" onclick="switchSettingsSection(this,'s-delivery')">📦 Delivery Addresses</div>
+      <div class="settings-nav-link" onclick="switchSettingsSection(this,'s-payment')">💳 Payment &amp; Payouts</div>
+      <div class="settings-nav-link" onclick="switchSettingsSection(this,'s-notifications')">🔔 Notifications</div>
+      <div style="margin-top:24px;padding:16px 24px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;" onclick="navigate('login')">🚪 Sign Out</div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div style="padding:32px 40px;background:var(--cream);overflow-y:auto;">
+
+      <!-- PROFILE INFO -->
+      <div id="s-profile">
+        <div class="settings-section">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+            <div>
+              <div class="settings-section-title">Profile Info</div>
+              <div class="settings-section-sub" style="margin-bottom:0;">Update your public presence on the marketplace.</div>
+            </div>
+          </div>
+          <!-- Profile display card -->
+          <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-warm);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:24px;">
+            <div style="position:relative;">
+              <div class="profile-display-avatar" style="width:64px;height:64px;font-size:22px;">LM</div>
+              <div style="position:absolute;bottom:0;right:0;background:var(--primary);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:2px solid white;font-size:11px;color:white;cursor:pointer;">📷</div>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:16px;">Lindiwe M.</div>
+              <div style="font-size:12px;color:var(--text-muted);">Member since October 2023</div>
+              <div class="profile-display-badge" style="margin-top:4px;">Top Seller</div>
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="form-group">
+              <label class="form-label">FULL NAME</label>
+              <input class="form-input" value="Lindiwe Mazibuko" title="full name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">USERNAME</label>
+              <input class="form-input" value="lindim_thrift" title="username">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">BIO</label>
+            <textarea class="form-input" rows="4" title="bio">Curating pre-loved vintage from Cape Town. Sustainability is the new luxury. ✨</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELIVERY ADDRESSES -->
+      <div id="s-delivery" style="display:none;">
+        <div class="settings-section">
+          <div class="settings-section-title">Delivery Addresses</div>
+          <div class="settings-section-sub">Manage where your curated finds are shipped.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <!-- PUDO Locker -->
+            <div style="border:2px solid var(--primary);border-radius:var(--radius);padding:18px;position:relative;background:#fff8f7;">
+              <div style="position:absolute;top:12px;right:12px;"><span class="pudo-badge">PREFERRED</span></div>
+              <div style="font-size:20px;margin-bottom:8px;">📦</div>
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px;">PUDO Locker</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">The Paddocks Shopping Centre</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Milnerton, Cape Town, 7441</div>
+              <button class="btn btn-primary btn-sm">Change Locker</button>
+            </div>
+            <!-- Home Office -->
+            <div style="border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;">
+              <div style="font-size:20px;margin-bottom:8px;">🏠</div>
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Home Office</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">12 Loop Street, Unit 402</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Cape Town CBD, 8001</div>
+              <div style="display:flex;gap:12px;">
+                <span style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;">Edit</span>
+                <span style="font-size:13px;color:var(--text-muted);cursor:pointer;">Remove</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm">+ Add New Address</button>
+        </div>
+      </div>
+
+      <!-- PAYMENT & PAYOUTS -->
+      <div id="s-payment" style="display:none;">
+        <div class="settings-section">
+          <div class="settings-section-title">Payment &amp; Payouts</div>
+          <div class="settings-section-sub">Secure transactions and marketplace earnings.</div>
+          <!-- Wallet card -->
+          <div style="background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);border-radius:var(--radius);padding:24px;margin-bottom:20px;position:relative;">
+            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">WALLET BALANCE</div>
+            <div style="font-family:var(--font-display);font-size:36px;font-weight:700;color:white;margin-bottom:16px;">R 1,450.00</div>
+            <div style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:var(--radius-pill);padding:5px 12px;font-size:12px;color:white;font-weight:600;">🛡 Escrow Protected</div>
+            <div style="display:flex;gap:10px;">
+              <button class="wallet-btn wallet-btn-primary">Withdraw Funds</button>
+              <button class="wallet-btn wallet-btn-secondary">Transaction History</button>
+            </div>
+          </div>
+          <!-- Saved Cards -->
+          <div style="font-weight:700;font-size:15px;margin-bottom:12px;">Saved Cards</div>
+          <div style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:36px;height:24px;background:#eb001b;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;">💳</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:14px;">•••• •••• •••• 4421</div>
+              <div style="font-size:12px;color:var(--text-muted);">Expires 08/26</div>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--teal);">Default</span>
+          </div>
+          <div style="color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">⊕ Add New Payment Method</div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div id="s-notifications" style="display:none;">
+        <div class="settings-section">
+          <div class="settings-section-title">Notifications</div>
+          <div class="settings-section-sub">Choose how you want to be updated.</div>
+          <!-- Toggle row -->
+          <div style="border-bottom:1px solid var(--border-light);padding:18px 0;display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:3px;">Sales &amp; Offers</div>
+              <div style="font-size:13px;color:var(--text-muted);">Get notified when someone buys your item or makes an offer.</div>
+            </div>
+            <div class="toggle-switch on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div style="border-bottom:1px solid var(--border-light);padding:18px 0;display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:3px;">New Messages</div>
+              <div style="font-size:13px;color:var(--text-muted);">Alerts for when buyers or sellers message you.</div>
+            </div>
+            <div class="toggle-switch on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+          </div>
+          <div style="padding:18px 0;display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:3px;color:var(--text-muted);">Price Drops</div>
+              <div style="font-size:13px;color:var(--text-light);">When an item in your likes goes on sale.</div>
+            </div>
+            <div class="toggle-switch" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save / Discard -->
+      <div style="display:flex;justify-content:flex-end;gap:12px;padding-top:8px;">
+        <button class="btn btn-secondary">Discard Changes</button>
+        <button class="btn btn-primary">Save All Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-bottom">
+      <span class="footer-brand-name">Past Times</span>
+      <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
+        <span>Secure Escrow via Ozow</span><span>Paxi Points</span><span>PUDO Lockers</span><span>Sustainability Manifesto</span><span>Terms of Service</span>
+      </div>
+      <div class="footer-badges">🌿 PROUDLY SOUTH AFRICAN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ORDER MANAGEMENT (SELLER)
+═══════════════════════════════════════════════ -->
+<div class="page" id="page-order-management">
+  <div class="dashboard-layout">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Seller Studio</div>
+        <div class="sidebar-subtitle">Verified Curator</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-link" onclick="navigate('seller-dashboard')">🏪 My Shop</div>
+        <div class="sidebar-link active">📦 Orders</div>
+        <div class="sidebar-link">💰 Earnings</div>
+        <div class="sidebar-link" onclick="navigate('messages')">💬 Messages</div>
+        <div class="sidebar-link" onclick="navigate('settings')">⚙️ Settings</div>
+      </div>
+      <div style="padding:0 20px;margin-top:auto;">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:16px;" onclick="navigate('create-listing')">+ Add Item</button>
+      </div>
+      <div class="sidebar-footer">
+        <a>❓ HELP CENTER</a>
+        <a onclick="navigate('login')">🚪 LOG OUT</a>
+      </div>
+    </div>
+
+    <div class="dashboard-main">
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;">
+        <div>
+          <h1 style="font-family:var(--font-display);font-size:30px;font-weight:700;margin-bottom:6px;">Order Management</h1>
+          <p style="font-size:14px;color:var(--text-muted);max-width:540px;line-height:1.6;">Monitor your sales, manage shipping logistics, and ensure your buyers receive their curated pieces safely via South African escrow.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:#e0f5f3;border:1px solid #b2dbd7;border-radius:var(--radius-pill);padding:8px 16px;font-size:13px;font-weight:600;color:var(--teal);white-space:nowrap;">
+          🛡 South African Escrow Protected
+        </div>
+      </div>
+
+      <!-- Active Order Card -->
+      <div style="background:white;border-radius:var(--radius-lg);border:1px solid var(--border-light);overflow:hidden;margin-bottom:28px;box-shadow:var(--shadow-sm);">
+
+        <!-- Order Progress Tracker -->
+        <div style="padding:24px 28px;border-bottom:1px solid var(--border-light);">
+          <div style="display:flex;align-items:center;position:relative;">
+            <!-- Progress line -->
+            <div style="position:absolute;left:0;right:0;top:20px;height:3px;background:var(--border);z-index:0;"></div>
+            <div style="position:absolute;left:0;width:30%;top:20px;height:3px;background:var(--primary);z-index:1;"></div>
+
+            <!-- Steps -->
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;border:3px solid white;box-shadow:0 0 0 2px var(--primary);">✓</div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--primary);">PAID</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;border:3px solid white;box-shadow:0 0 0 2px var(--primary);">🚐</div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--primary);">SHIPPED</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;border:3px solid white;">📬</div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">DELIVERED</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;z-index:2;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px;border:3px solid white;">✅</div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">COMPLETED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order detail body -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+          <!-- Left: Item + Buyer -->
+          <div style="padding:24px 28px;border-right:1px solid var(--border-light);">
+            <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:20px;">
+              <div style="width:90px;height:110px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;">🧥</div>
+              <div>
+                <div style="font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:4px;">ORDER #8832-ZA</div>
+                <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:6px;line-height:1.2;">Vintage 1990s Distressed Leather Jacket</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Size: Medium &nbsp;•&nbsp; Condition: Excellent</div>
+                <div style="font-size:20px;font-weight:700;color:var(--primary);">R 2,450.00</div>
+              </div>
+            </div>
+
+            <!-- Buyer details -->
+            <div style="background:var(--bg-warm);border-radius:var(--radius-sm);padding:16px;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:10px;">BUYER DETAILS</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--teal-light);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">LM</div>
+                <div>
+                  <div style="font-weight:600;font-size:14px;">Lerato Mofokeng</div>
+                  <div style="font-size:12px;color:var(--text-muted);">@lerato_styles &nbsp;•&nbsp; Cape Town</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:3px;">Shipping Method</div>
+                  <div style="font-size:13px;font-weight:500;">PUDO Locker-to-Locker</div>
+                </div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:3px;">Destination</div>
+                  <div style="font-size:13px;font-weight:500;">Gardens Shopping Centre Locker, CT</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Fulfillment Action -->
+          <div style="padding:24px 28px;">
+            <div style="font-weight:700;font-size:17px;margin-bottom:10px;">Fulfillment Action</div>
+            <div style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:20px;">Please drop off the item at your nearest PUDO locker within 48 hours. Once shipped, provide the tracking number below to release the next stage of the escrow process.</div>
+
+            <div style="margin-bottom:16px;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:8px;">TRACKING NUMBER</div>
+              <input class="form-input" placeholder="Enter PUDO or Aramex Waybill" style="margin-bottom:12px;">
+              <button class="btn btn-primary btn-lg" style="width:100%;border-radius:var(--radius-sm);">🚐 Confirm Item Shipped</button>
+            </div>
+
+            <div style="text-align:center;font-size:12px;color:var(--teal);display:flex;align-items:center;justify-content:center;gap:6px;">
+              🛡 Funds held securely in escrow
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Order History -->
+      <div>
+        <div style="font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:16px;">Recent Order History</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <!-- History card 1 -->
+          <div style="background:white;border-radius:var(--radius);border:1px solid var(--border-light);padding:18px;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <span class="badge badge-teal">DELIVERED</span>
+              <span style="font-size:12px;color:var(--text-muted);">Oct 12</span>
+            </div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Hand-knitted Mohair Cardigan</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Buyer: Sipho K.</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:16px;font-weight:700;color:var(--primary);">R 850.00</div>
+              <span style="color:var(--text-muted);font-size:16px;">›</span>
+            </div>
+          </div>
+          <!-- History card 2 -->
+          <div style="background:white;border-radius:var(--radius);border:1px solid var(--border-light);padding:18px;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <span class="badge" style="background:#fff3e0;color:#e67e22;">PROCESSING</span>
+              <span style="font-size:12px;color:var(--text-muted);">Oct 14</span>
+            </div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Retro Adidas Samba '85</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Buyer: Jenna V.</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:16px;font-weight:700;color:var(--primary);">R 1,200.00</div>
+              <span style="color:var(--text-muted);font-size:16px;">›</span>
+            </div>
+          </div>
+          <!-- History card 3 -->
+          <div style="background:white;border-radius:var(--radius);border:1px solid var(--border-light);padding:18px;cursor:pointer;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+              <span class="badge" style="background:#e8e8e8;color:#666;">COMPLETED</span>
+              <span style="font-size:12px;color:var(--text-muted);">Oct 08</span>
+            </div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Brass Mid-Century Lamp</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Buyer: Thabo M.</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:16px;font-weight:700;color:var(--primary);">R 650.00</div>
+              <span style="color:var(--text-muted);font-size:16px;">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer inside dashboard -->
+      <div style="margin-top:48px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12px;color:var(--text-light);">
+        <span class="footer-brand-name" style="font-size:14px;">Past Times</span>
+        <div style="display:flex;gap:20px;"><span>Secure Escrow via Ozow</span><span>Sustainability Manifesto</span><span>Terms of Service</span></div>
+        <span style="color:var(--teal);font-weight:600;">🌿 PROUDLY SOUTH AFRICAN</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

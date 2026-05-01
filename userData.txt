@@ -1,0 +1,7 @@
+1|john_doe|John|Doe|john.doe@pasttimes.co.za|29ef52e7563626a96cea7f4b4085c12|customer|verified|2024-01-15
+2|jane_smith|Jane|Smith|jane.smith@pasttimes.co.za|5f4dcc3b5aa765d61d8327deb882cf99|customer|verified|2024-02-20
+3|thabo_m|Thabo|Mokoena|thabo.mokoena@gmail.com|d8578edf8458ce06fbc5bb76a58c5ca4|customer|pending|2024-03-10
+4|lindiwe_c|Lindiwe|Cele|lindiwe.cele@outlook.com|e10adc3949ba59abbe56e057f20f883e|customer|verified|2024-04-05
+5|sipho_k|Sipho|Khumalo|sipho.khumalo@yahoo.com|25d55ad283aa400af464c76d713c07ad|customer|pending|2024-05-18
+6|admin_user|Admin|User|admin@pasttimes.co.za|21232f297a57a5a743894a0e4a801fc3|admin|verified|2024-01-01
+7|lerato_m|Lerato|Mofokeng|lerato.m@pasttimes.co.za|098f6bcd4621d373cade4e832627b4f6|customer|verified|2024-06-22
