@@ -23,7 +23,7 @@
     <div style="margin-top:24px;padding:16px 24px;border-top:1px solid var(--border);">
       <div style="display:flex;align-items:center;gap:8px;color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;" onclick="location.href='../php/AuthSystem/logout.php'">🚪 Sign Out</div>
     </div>
-  </div>
+</div>
   <div style="padding:32px 40px;background:var(--cream);overflow-y:auto;">
     <div id="s-profile">
       <div class="settings-section">
