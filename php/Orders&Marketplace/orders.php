@@ -47,6 +47,8 @@ $statusColour = [
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
+      <link rel="stylesheet" href="../css/responsive.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body{background:var(--cream);font-family:var(--font-body);}
@@ -74,7 +76,7 @@ $statusColour = [
         <div class="logo-icon">🏠︎</div>
         <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
     </div>
-    
+
   <div class="navbar-nav">
     <a class="nav-link" href="../../html/home.php">Explore</a>
     <a class="nav-link" href="../../html/favorites.php">Favourites</a>

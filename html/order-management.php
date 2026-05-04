@@ -87,6 +87,8 @@ $statusColour = [
   <title>Order Management – Past Times</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+      <link rel="stylesheet" href="../css/responsive.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body{background:var(--cream);font-family:var(--font-body);}

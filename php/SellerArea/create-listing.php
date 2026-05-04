@@ -64,6 +64,8 @@ $conn->close();
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Listing – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
+      <link rel="stylesheet" href="../css/responsive.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     .alert-success{background:#e6faf0;border:1px solid #b2dbd7;color:#1a5c35;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:14px;}

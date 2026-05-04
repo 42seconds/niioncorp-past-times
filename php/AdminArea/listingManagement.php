@@ -28,6 +28,8 @@ $conn->close();
 <title>Listing Management – Admin</title>
 
 <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+
 
 <style>
 body {

@@ -30,6 +30,8 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($p['title']) ?> – Past Times</title>
   <link rel="stylesheet" href="../css/styles.css">
+      <link rel="stylesheet" href="../css/responsive.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     .product-img{width:100%;height:420px;object-fit:cover;border-radius:12px;}
@@ -39,6 +41,16 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
 <body>
 <nav class="navbar">
   <div class="navbar-brand" onclick="location.href='home.php'"><div class="logo-icon">P</div><span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span></div>
+    <button class="navbar-toggle" aria-label="Toggle menu" aria-expanded="false"
+          onclick="
+            var nav = this.parentElement.querySelector('.navbar-nav');
+            var open = nav.classList.toggle('open');
+            this.setAttribute('aria-expanded', open);">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
   <div class="navbar-nav">
     <a class="nav-link" href="home.php">Explore</a>
     <a class="nav-link" href="about.php">About</a>

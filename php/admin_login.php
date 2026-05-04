@@ -70,6 +70,8 @@ $conn->close();
     <title>Admin Login – Past Times</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
+        <link rel="stylesheet" href="../css/responsive.css">
+
 
     <style>
         body {

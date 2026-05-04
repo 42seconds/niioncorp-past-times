@@ -15,7 +15,7 @@ Traditional thrift stores often lack scalable digital platforms that effectively
 Past Times addresses this challenge by providing an accessible online marketplace that enhances the visibility, credibility, and convenience of thrift commerce.
 
 ---
-
+    
 ## Project Objectives
 
 * Develop a secure multi-vendor thrift marketplace

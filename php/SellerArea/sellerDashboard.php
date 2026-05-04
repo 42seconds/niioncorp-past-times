@@ -114,6 +114,8 @@ if (isset($_GET['msg'])) {
   <title>Seller Dashboard – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/dashboard.css">
+      <link rel="stylesheet" href="../css/responsive.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     .sb{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em;}
