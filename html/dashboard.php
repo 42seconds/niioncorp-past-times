@@ -1,167 +1,252 @@
+
 <?php
 session_start();
-
 if (!isset($_SESSION['userID'])) {
-    header('Location: ../php/AuthSystem/login.php');
-    exit;
+    header('Location: ../php/AuthSystem/login.php'); exit;
+}
+require_once '../php/BackendLogic/dbConn.php';
+
+$userID   = (int)$_SESSION['userID'];
+$initials = strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['lastName'],0,1));
+
+// ── Order stats ───────────────────────────────────────────────────────────────
+$orderStats = ['total'=>0,'pending'=>0,'paid'=>0,'shipped'=>0,'delivered'=>0,'cancelled'=>0];
+$res = $conn->query("SELECT status, COUNT(*) c FROM tblOrders WHERE buyerID=$userID GROUP BY status");
+while ($r = $res->fetch_assoc()) {
+    $orderStats[$r['status']] = (int)$r['c'];
+    $orderStats['total'] += (int)$r['c'];
 }
 
+// ── Recent orders (last 5) ────────────────────────────────────────────────────
+$stmt = $conn->prepare("
+    SELECT o.orderID, o.status, o.totalPrice, o.deliveryMethod, o.createdAt, o.updatedAt,
+           l.title, l.imagePath, l.category, l.listingID,
+           u.username AS sellerName
+    FROM tblOrders o
+    JOIN tblListings l ON o.listingID = l.listingID
+    JOIN tblUser u     ON o.sellerID  = u.userID
+    WHERE o.buyerID = ?
+    ORDER BY o.createdAt DESC
+    LIMIT 5
+");
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$recentOrders = $stmt->get_result();
+$stmt->close();
 
-require_once('../php/BackendLogic/dbConn.php');
+// ── Favourites count (placeholder until tblFavourites exists) ─────────────────
+$favCount = 0;
 
-$userID = $_SESSION['userID'];
+$conn->close();
 
+$statusColour = [
+    'pending'   => ['bg'=>'#fff3e0','c'=>'#7a4f00','b'=>'#ffe0b2'],
+    'paid'      => ['bg'=>'#e8f0fe','c'=>'#1a3c8b','b'=>'#c5d5fb'],
+    'shipped'   => ['bg'=>'#e6faf0','c'=>'#1a5c35','b'=>'#b2dbd7'],
+    'delivered' => ['bg'=>'#e6faf0','c'=>'#1a5c35','b'=>'#b2dbd7'],
+    'cancelled' => ['bg'=>'#fce8e8','c'=>'#8b1a14','b'=>'#f5b7b7'],
+    'refunded'  => ['bg'=>'#fce8e8','c'=>'#8b1a14','b'=>'#f5b7b7'],
+];
 
-$balance = 0.00;
-
+// Timeline steps shared
+$timelineSteps = [
+    ['key'=>'pending',   'label'=>'Order Placed'],
+    ['key'=>'paid',      'label'=>'Payment'],
+    ['key'=>'shipped',   'label'=>'Shipped'],
+    ['key'=>'delivered', 'label'=>'Delivered'],
+];
+$statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard – Past Times</title>
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard – Past Times</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Status badges ── */
+    .sb{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em;}
+    /* ── Section card ── */
+    .sec{background:white;border-radius:var(--radius-lg);border:1px solid var(--border-light);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px;}
+    .sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+    .sec-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin:0;}
+    /* ── Order card ── */
+    .order-row{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-light);cursor:pointer;transition:.15s;}
+    .order-row:last-child{border-bottom:none;}
+    .order-row:hover{background:#fafafa;border-radius:8px;padding-left:8px;}
+    .order-thumb{width:52px;height:52px;border-radius:8px;background:var(--bg-warm);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;}
+    .order-thumb img{width:100%;height:100%;object-fit:cover;}
+    /* ── Mini timeline inside each order row ── */
+    .mini-timeline{display:flex;align-items:center;gap:0;margin-top:6px;}
+    .mini-step{display:flex;align-items:center;}
+    .mini-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
+    .mini-dot.done{background:var(--primary);border-color:var(--primary);color:white;}
+    .mini-dot.active{background:var(--dark);border-color:var(--dark);color:white;}
+    .mini-line{width:24px;height:2px;background:var(--border);}
+    .mini-line.done{background:var(--primary);}
+    .mini-label{font-size:10px;color:var(--text-muted);margin-top:3px;white-space:nowrap;}
+    /* ── Empty state ── */
+    .empty{text-align:center;padding:48px 20px;color:var(--text-muted);}
+    .empty .icon{font-size:44px;margin-bottom:12px;}
+    /* ── Stat cards ── */
+    .stat-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border-light);padding:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow-sm);}
+    .stat-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:4px;}
+    .stat-value{font-family:var(--font-display);font-size:30px;font-weight:700;}
+    .stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  </style>
 </head>
-
 <body>
-    <div class="dashboard-layout">
-        <div class="sidebar">
-            <h2>Welcome back, <?= $_SESSION['firstName'] ?></h2>
+<div class="dashboard-layout">
 
-            <div class="sidebar-header">
-                <div class="sidebar-title">Verified Seller</div>
-                <div class="sidebar-subtitle">Verified </div>
-            </div>
-
-        <div class="sidebar-nav">
-            <div class="sidebar-link active">🏪 My Shop</div>
-            <div class="sidebar-link" onclick="location.href='order-management.php'">📦 Orders</div>
-            <div class="sidebar-link">💰 Earnings</div>
-            <div class="sidebar-link" onclick="location.href='messages.php'">💬 Messages</div>
-            <div class="sidebar-link" onclick="location.href='settings.php'">⚙️ Settings</div>
-        </div>
-        <div class="sidebar-footer">
-            <a>❓ HELP CENTER</a>
-            <a href='../php/AuthSystem/logout.php'>🚪 LOG OUT</a>
-        </div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin-bottom:10px;"><?= $initials ?></div>
+      <div class="sidebar-title"><?= htmlspecialchars($_SESSION['firstName'].' '.$_SESSION['lastName']) ?></div>
+      <div class="sidebar-subtitle"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></div>
     </div>
-    <div class="dashboard-main">
-        <div class="dashboard-top">
-            <div>
-                <div class="wallet-card">
-                    <div class="wallet-label">WALLET BALANCE</div>
+    <div class="sidebar-nav">
+      <div class="sidebar-link active">🏠︎ My Dashboard</div>
+      <div class="sidebar-link" onclick="location.href='../php/Orders&Marketplace/orders.php'"> My Orders
+        <?php if ($orderStats['shipped'] > 0): ?>
+          <span style="margin-left:auto;background:var(--primary);color:white;font-size:10px;padding:1px 7px;border-radius:999px;"><?= $orderStats['shipped'] ?></span>
+        <?php endif; ?>
+      </div>
+     <!-- <div class="sidebar-link" onclick="location.href='messages.php'"> Messages</div> -->
+      <div class="sidebar-link" onclick="location.href='favorites.php'"> Favourites</div>
+      <div class="sidebar-link" onclick="location.href='settings.php'"> Settings</div>
+    </div>
+    <div class="sidebar-footer">
+      <a href="home.php">🏠︎ Back to Shop</a>
+      <a href="../php/AuthSystem/logout.php">⚠ Log Out</a>
+    </div>
+  </div>
 
-                    <!--- <div class="wallet-amount">R 4,850.00</div> -->
-                    <div class="wallet-amount">R <?= number_format($balance, 2) ?></div>
+  <!-- MAIN -->
+  <div class="dashboard-main">
 
-                    <div class="escrow-badge">🛡 Escrow Protected</div>
-                    <div class="wallet-btns">
-                        <button class="wallet-btn wallet-btn-primary">Payout</button>
-                        <button class="wallet-btn wallet-btn-secondary">History</button>
-                    </div>
-                </div>
-            </div>
-            <div class="stat-cards">
-                <div class="stat-card">
-                    <div>
-                        <div class="stat-label">Followers</div>
-                        <div class="stat-value">1,204</div>
-                    </div>
-                    <div class="stat-icon stat-icon-teal">👥</div>
-                </div>
-                <div class="stat-card">
-                    <div>
-                        <div class="stat-label">Active Listings</div>
-                        <div class="stat-value">42</div>
-                    </div>
-                    <div class="stat-icon stat-icon-orange">📋</div>
-                </div>
-            </div>
+    <div style="margin-bottom:24px;">
+      <h1 style="font-family:var(--font-display);font-size:26px;font-weight:700;margin:0 0 4px;">Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?> 👋</h1>
+      <div style="font-size:14px;color:var(--text-muted);">Here's a summary of your shopping activity.</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+      <div class="stat-card">
+        <div><div class="stat-label">Total Orders</div><div class="stat-value"><?= $orderStats['total'] ?></div></div>
+        
+      </div>
+      <div class="stat-card">
+        <div><div class="stat-label">In Transit</div><div class="stat-value"><?= $orderStats['shipped'] ?></div></div>
+        
+      </div>
+      <div class="stat-card">
+        <div><div class="stat-label">Delivered</div><div class="stat-value"><?= $orderStats['delivered'] ?></div></div>
+            
+      </div>
+      <div class="stat-card">
+        <div><div class="stat-label">Pending</div><div class="stat-value"><?= $orderStats['pending'] ?></div></div>
+        
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+      <a href="home.php" class="btn btn-primary">Shop Now</a>
+      <a href="../php/Orders&Marketplace/orders.php" class="btn btn-secondary"> All Orders</a>
+      <a href="messages.php" class="btn btn-secondary"> Messages</a>
+      <a href="favorites.php" class="btn btn-secondary"> Favourites</a>
+    </div>
+
+    <!-- ACTIVE ORDERS WITH MINI TIMELINE -->
+    <div class="sec">
+      <div class="sec-header">
+        <div class="sec-title">My Recent Orders</div>
+        <a href="../php/Orders&Marketplace/orders.php" style="font-size:13px;color:var(--primary);font-weight:600;text-decoration:none;">View All →</a>
+      </div>
+
+      <?php if ($recentOrders->num_rows > 0):
+        while ($o = $recentOrders->fetch_assoc()):
+          $sc = $statusColour[$o['status']] ?? $statusColour['pending'];
+          $currentIdx = array_search($o['status'], $statusOrder);
+          $isCancelled = in_array($o['status'], ['cancelled','refunded']);
+      ?>
+      <div class="order-row" onclick="location.href='../php/Orders&Marketplace/order-details.php?id=<?= $o['orderID'] ?>'">
+
+        <div class="order-thumb">
+          <?php if (!empty($o['imagePath'])): ?>
+            <img src="../<?= htmlspecialchars($o['imagePath']) ?>" alt="">
+          <?php else: ?>📦<?php endif; ?>
         </div>
+
         <div>
-            <div class="section-header">
-                <h2 class="section-title" style="margin:0;">Orders Management</h2><a class="view-all" onclick="location.href='order-management.php'">View all →</a>
-            </div>
-            <div class="order-tabs">
-                <button class="order-tab active">New (3)</button>
-                <button class="order-tab" onclick="switchTab(this)">To Ship (1)</button>
-                <button class="order-tab" onclick="switchTab(this)">Shipped (8)</button>
-                <button class="order-tab" onclick="switchTab(this)">Completed (124)</button>
-            </div>
-            <div class="order-item">
-                <span class="badge badge-new">NEW</span>
-                <div class="order-thumb">👜</div>
-                <div class="order-info">
-                    <div class="order-name">Vintage Leather Satchel</div>
-                    <div class="order-meta">Order #YG-99201 • Today, 14:20</div>
-                    <div class="order-ship">📦 Paxi Point-to-Point &nbsp; 👤 Lerato M.</div>
-                </div>
-                <div class="order-price">R 1,250</div>
-                <div class="order-actions"><button class="btn btn-primary btn-sm">Accept Order</button><button class="btn btn-secondary btn-sm">Message</button></div>
-            </div>
-            <div class="order-item">
-                <span class="badge badge-new">NEW</span>
-                <div class="order-thumb">⌚</div>
-                <div class="order-info">
-                    <div class="order-name">Classic Minimalist Watch</div>
-                    <div class="order-meta">Order #YG-99188 • Yesterday, 18:05</div>
-                    <div class="order-ship">🔒 PUDO Locker &nbsp; 👤 Johan S.</div>
-                </div>
-                <div class="order-price">R 850</div>
-                <div class="order-actions"><button class="btn btn-primary btn-sm">Accept Order</button><button class="btn btn-secondary btn-sm">Message</button></div>
-            </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div style="font-weight:700;font-size:15px;">Weekly Performance</div>
-                    <div class="chart-label">+12.5% vs last week</div>
-                </div>
-                <div class="chart-bars">
-                    <div class="chart-bar" style="height:40%;background:var(--border);"></div>
-                    <div class="chart-bar" style="height:55%;background:var(--border);"></div>
-                    <div class="chart-bar" style="height:70%;background:var(--border);"></div>
-                    <div class="chart-bar" style="height:95%;background:var(--primary);"></div>
-                    <div class="chart-bar" style="height:45%;background:var(--border);"></div>
-                    <div class="chart-bar" style="height:65%;background:var(--border);"></div>
-                    <div class="chart-bar" style="height:85%;background:var(--primary-light);"></div>
-                </div>
-                <div class="chart-days">
-                    <div class="chart-day">MON</div>
-                    <div class="chart-day">TUE</div>
-                    <div class="chart-day">WED</div>
-                    <div class="chart-day">THU</div>
-                    <div class="chart-day">FRI</div>
-                    <div class="chart-day">SAT</div>
-                    <div class="chart-day">SUN</div>
-                </div>
-            </div>
-            <div class="shop-health">
-                <div style="font-weight:700;font-size:15px;margin-bottom:8px;">Shop Health</div>
-                <div class="health-bar-wrap">
-                    <div class="health-bar" style="width:94%;"></div>
-                </div>
-                <div class="health-score">94% Excellent</div>
-                <div class="health-tip">"Your response time is faster than 80% of sellers this week!"</div>
-                <div class="top-seller-banner">
-                    <div>
-                        <div class="ts-title">⭐ Top Rated Seller</div>
-                        <div class="ts-sub">Maintain this status for 5% lower fees.</div>
-                    </div>
-                    <div style="font-size:28px;">🏆</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-    <div class="add-item-fab"><button class="btn btn-primary" onclick="location.href='create-listing.html'">+ Add Item</button></div>
-    <script src="../javascript/script.js"></script>
-    <script src="../javascript/dashboard.js"></script>
-</body>
+          <div style="font-weight:600;font-size:14px;margin-bottom:2px;"><?= htmlspecialchars($o['title']) ?></div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">
+            Order #<?= $o['orderID'] ?> &nbsp;·&nbsp;
+            @<?= htmlspecialchars($o['sellerName']) ?> &nbsp;·&nbsp;
+            <?= date('d M Y', strtotime($o['createdAt'])) ?>
+          </div>
 
+          <?php if (!$isCancelled): ?>
+          <!-- MINI TIMELINE -->
+          <div class="mini-timeline">
+            <?php foreach ($timelineSteps as $i => $step):
+              $stepIdx = array_search($step['key'], $statusOrder);
+              $done    = $stepIdx < $currentIdx;
+              $active  = $stepIdx === $currentIdx;
+            ?>
+              <?php if ($i > 0): ?>
+                <div class="mini-line <?= $done ? 'done' : '' ?>"></div>
+              <?php endif; ?>
+              <div style="display:flex;flex-direction:column;align-items:center;">
+                <div class="mini-dot <?= $done ? 'done' : ($active ? 'active' : '') ?>">
+                  <?= $done ? '✓' : ($active ? '●' : '') ?>
+                </div>
+                <div class="mini-label" style="<?= ($done||$active)?'color:var(--dark);font-weight:600;':'' ?>"><?= $step['label'] ?></div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <?php else: ?>
+            <span class="sb" style="background:<?= $sc['bg'] ?>;color:<?= $sc['c'] ?>;border:1px solid <?= $sc['b'] ?>;"><?= strtoupper($o['status']) ?></span>
+          <?php endif; ?>
+        </div>
+
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--primary);">R <?= number_format($o['totalPrice'],2) ?></div>
+          <div style="margin-top:4px;">
+            <span class="sb" style="background:<?= $sc['bg'] ?>;color:<?= $sc['c'] ?>;border:1px solid <?= $sc['b'] ?>;">
+              <?= strtoupper($o['status']) ?>
+            </span>
+          </div>
+          <?php if ($o['status'] === 'shipped'): ?>
+            <div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:4px;">⚠ Confirm receipt?</div>
+          <?php endif; ?>
+        </div>
+
+      </div>
+      <?php endwhile; else: ?>
+      <div class="empty">
+        <div class="icon">🛍</div>
+        <div style="font-weight:600;font-size:16px;margin-bottom:8px;">No orders yet</div>
+        <div style="font-size:13px;margin-bottom:16px;">Find something you love in the marketplace.</div>
+        <a href="home.php" class="btn btn-primary">Browse Listings</a>
+      </div>
+      <?php endif; ?>
+    </div>
+
+    <!-- ESCROW EXPLAINER -->
+    <div style="background:linear-gradient(135deg,var(--dark) 0%,#2d2d2d 100%);border-radius:var(--radius-lg);padding:24px;color:white;display:flex;justify-content:space-between;align-items:center;gap:20px;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:6px;">🛡 Your money is always protected</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.6;">Every purchase on Past Times is held in secure Ozow Escrow. Funds are only released to the seller once you confirm you've received your item in good condition.</div>
+      </div>
+      <a href="../php/Orders&Marketplace/orders.php" class="btn" style="background:white;color:var(--dark);font-weight:700;white-space:nowrap;flex-shrink:0;">View All Orders</a>
+    </div>
+
+  </div>
+</div>
+<script src="../javascript/script.js"></script>
+</body>
 </html>

@@ -14,7 +14,15 @@
  */
 
 session_start();
-include ('../BackendLogic/dbConn.php');
+
+
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit;
+}
+
+require_once(__DIR__ . '/../BackendLogic/dbConn.php');
 
 $error    = '';
 $userData = null;
@@ -33,14 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $conn->prepare(
         "SELECT * FROM tblUser
-         WHERE username = ? AND email = ? AND role = 'customer'
+         WHERE username = ? AND email = ?
          LIMIT 1"
     );
     $stmt->bind_param("ss", $sUsername, $sEmail);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($result->num_rows === 1) {
+   if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
 
         if ($row['passwordHash'] !== $hashedPassword) {
@@ -48,15 +56,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($row['status'] === 'pending') {
             $error = "Your account is pending admin verification. Please check back later.";
         } else {
-            // SUCCESS
+            // ── SUCCESS: store session then redirect ───────────────────────
             $_SESSION['userID']    = $row['userID'];
             $_SESSION['username']  = $row['username'];
             $_SESSION['firstName'] = $row['firstName'];
             $_SESSION['lastName']  = $row['lastName'];
+            $_SESSION['email']     = $row['email'];
             $_SESSION['role']      = $row['role'];
-            $userData = $row;
-
-        header('Location: ../html/past-times.html'); // Redirect to self to show user data banner
+            $stmt->close();
+            $conn->close();
+            
+                if ($row['role'] === 'admin') {
+                    header('Location: ../AdminArea/adminDashboard.php');
+                    } elseif ($row['role'] === 'seller') {
+                    header('Location: ../SellerArea/sellerDashboard.php'); // create this later
+                    } else {
+                    header('Location: ../../html/home.php'); 
+                }// customer  // ← change to your post-login page
+            exit;
         }
     } else {
         $error = "No account found with that username and email.";
@@ -72,7 +89,7 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – Past Times</title>
-  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../../css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body { background: var(--cream); font-family: var(--font-body); }
@@ -90,14 +107,14 @@ $conn->close();
     .links a { color: var(--primary); font-weight: 600; text-decoration: none; }
     .links a:hover { text-decoration: underline; }
     .admin-link { display: block; margin-top: 12px; text-align: center; font-size: 13px; }
-    .btn-admin { display: inline-block; padding: 9px 22px; background: var(--dark); color: #fff; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; margin-top: 6px; }
+    .btn-admin { display: inline-block; padding: 9px 22px; background: var(--dark); color: #ffff; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; margin-top: 6px; }
     .btn-admin:hover { background: #333; }
   </style>
 </head>
 <body>
 
 <div style="text-align:center; padding:24px 0 0;">
-  <a href="../html/home.php" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--primary);text-decoration:none;">Past Times</a>
+  <a href="../../html/home.php" style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--primary);text-decoration:none;">Past Times</a>
 </div>
 
 <div class="container">
@@ -131,74 +148,43 @@ $conn->close();
     <?php if ($error): ?>
       <div class="alert-error"><?= $error ?></div>
     <?php endif; ?>
+  <form method="POST" action="login.php">
 
-    <form method="POST" action="../php/AuthSystem/login.php" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="username">Username</label>
+      <input class="form-input" type="text" id="username" name="username"
+        value="<?= $sUsername ?>" placeholder="e.g. john_doe"
+        required minlength="3" title="At least 3 characters">
+    </div>
 
-      <div class="form-group">
-        <label class="form-label" for="username">Username</label>
-        <input
-          class="form-input"
-          type="text"
-          id="username"
-          name="username"
-          value="<?= $sUsername ?>"
-          placeholder="e.g. john_doe"
-          required
-          minlength="3"
-          title="Please enter your username (at least 3 characters)"
-        >
-      </div>
+    <div class="form-group">
+      <label class="form-label" for="email">Email Address</label>
+      <input class="form-input" type="email" id="email" name="email"
+        value="<?= $sEmail ?>" placeholder="e.g. john.doe@example.com"
+        required title="Enter a valid email">
+    </div>
 
-      <div class="form-group">
-        <label class="form-label" for="email">Email Address</label>
-        <input
-          class="form-input"
-          type="email"
-          id="email"
-          name="email"
-          value="<?= $sEmail ?>"
-          placeholder="e.g. john.doe@example.com"
-          required
-          title="Please enter a valid email address"
-        >
-      </div>
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-input" type="password" id="password" name="password"
+        placeholder="Enter your password" required minlength="4">
+    </div>
 
-      <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input
-          class="form-input"
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-          minlength="4"
-          title="Password is required"
-        >
-      </div>
-
-      <button class="btn btn-primary btn-lg" type="submit">Log In</button>
-    </form>
+    <button class="btn btn-primary btn-lg" type="submit">Log In</button>
+  </form>
 
     <div class="links">
-      Don't have an account? <a href="../php/AuthSystem/register.php">Register here</a>
+      Don't have an account? <a href="../AuthSystem/register.php">Register here</a>
     </div>
 
     <div class="admin-link">
-      <a class="btn-admin" href="../php/admin_login.php">Admin Login</a>
+      <a class="btn-admin" href="../admin_login.php">Admin Login</a>
     </div>
 
   <?php endif; ?>
 
 </div>
 
-<?php
-// Handle logout
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header('Location: ../php/AuthSystem/login.php');
-    exit;
-}
-?>
+
 </body>
 </html>

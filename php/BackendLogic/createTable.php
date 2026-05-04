@@ -1,90 +1,154 @@
 <?php
 /**
- * createTable.php
- * Past Times – Table Setup Script
+ * createTable.php — Past Times
  *
- * Each time this script runs it will:
- *   1. Drop tblUser if it exists
- *   2. Re-create tblUser
- *   3. Load data from userData.txt using LOAD DATA LOCAL INFILE
+ * SAFE to run at any time. Uses CREATE TABLE IF NOT EXISTS on every table.
+ * Only seeds userData.txt if tblUser is empty.
+ * Never drops anything unless you explicitly pass ?reset=1 AND ?confirm=yes
  *
- * Usage: run once via browser or CLI after setting up your DB.
- * CLI:  php createTable.php
+ * Normal setup  : /php/BackendLogic/createTable.php
+ * Force reset   : /php/BackendLogic/createTable.php?reset=1&confirm=yes
  */
 
-// Pull in the database connection
-include ('../php/BackendLogic/dbConn.php');
+include 'dbConn.php';
 
-// ── Step 1: Drop table if it exists ──────────────────────────────────────────
-$dropSQL = "DROP TABLE IF EXISTS tblUser";
-if (!$conn->query($dropSQL)) {
-    die("Error dropping table: " . $conn->error);
-}
-echo "✔ tblUser dropped (if it existed).<br>\n";
+$reset = isset($_GET['reset']) && $_GET['reset'] === '1'
+      && isset($_GET['confirm']) && $_GET['confirm'] === 'yes';
 
-// ── Step 2: (Re)create tblUser ───────────────────────────────────────────────
-$createSQL = "
-CREATE TABLE tblUser (
-    userID   INT auto_increment  NOT NULL primary key,
-    username     VARCHAR(50)    NOT NULL,
-    firstName    VARCHAR(50)    NOT NULL,
-    lastName     VARCHAR(50)    NOT NULL,
-    email        VARCHAR(100)   NOT NULL UNIQUE,
-    passwordHash VARCHAR(255)   NOT NULL,
-    role         ENUM('admin','customer') NOT NULL DEFAULT 'customer',
-    status       ENUM('pending','verified') NOT NULL DEFAULT 'pending',
-    createdAt    DATE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-";
+echo "<pre style='font-family:monospace;font-size:14px;'>";
+echo "Past Times — Table Setup\n";
+echo "========================\n\n";
 
-if (!$conn->query($createSQL)) {
-    die("Error creating table: " . $conn->error);
-}
-echo " tblUser created successfully.<br>\n";
-
-// ── Step 3: Load data from userData.txt ──────────────────────────────────────
-// The file uses pipe ( | ) as delimiter and Unix line endings.
-// Adjust the path below to match where userData.txt lives on your server.
-$dataFile = realpath(__DIR__ . '/../userData.txt');
-
-if (!$dataFile || !file_exists($dataFile)) {
-    die("Error: userData.txt not found at expected path. Checked: " . __DIR__ . '/../userData.txt');
+// ── OPTIONAL HARD RESET (both params required) ────────────────────────────────
+if ($reset) {
+    echo "⚠  RESET requested — dropping existing tables...\n";
+    $conn->query("DROP TABLE IF EXISTS tblOrderItems");
+    $conn->query("DROP TABLE IF EXISTS tblOrders");
+    $conn->query("DROP TABLE IF EXISTS tblListings");
+    $conn->query("DROP TABLE IF EXISTS tblUser");
+    echo "✔  All tables dropped.\n\n";
 }
 
-// Enable LOCAL INFILE on this connection
-$conn->options(MYSQLI_OPT_LOCAL_INFILE, true);
+// ── tblUser ───────────────────────────────────────────────────────────────────
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblUser (
+    userID       INT          NOT NULL AUTO_INCREMENT,
+    username     VARCHAR(50)  NOT NULL UNIQUE,
+    firstName    VARCHAR(50)  NOT NULL,
+    lastName     VARCHAR(50)  NOT NULL,
+    email        VARCHAR(100) NOT NULL UNIQUE,
+    passwordHash VARCHAR(255) NOT NULL,
+    role         ENUM('admin','customer','seller') NOT NULL DEFAULT 'customer',
+    status       ENUM('pending','verified')        NOT NULL DEFAULT 'pending',
+    createdAt    DATE,
+    PRIMARY KEY (userID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblUser failed: " . $conn->error . "\n");
+echo "✔  tblUser — ready.\n";
 
-$loadSQL = "
-LOAD DATA LOCAL INFILE '$dataFile'
-INTO TABLE tblUser
-FIELDS TERMINATED BY '|'
-LINES TERMINATED BY '\n'
-(userID, username, firstName, lastName, email, passwordHash, role, status, createdAt)
-";
+// ── tblListings ───────────────────────────────────────────────────────────────
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblListings (
+    listingID   INT            NOT NULL AUTO_INCREMENT,
+    sellerID    INT            NOT NULL,
+    title       VARCHAR(150)   NOT NULL,
+    description TEXT,
+    category    VARCHAR(50),
+    condition_  VARCHAR(50),
+    price       DECIMAL(10,2)  NOT NULL DEFAULT 0.00,
+    delivery    VARCHAR(150),
+    imagePath   VARCHAR(255)   DEFAULT NULL,
+    status      ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    createdAt   DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (listingID),
+    FOREIGN KEY (sellerID) REFERENCES tblUser(userID) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblListings failed: " . $conn->error . "\n");
+echo "✔  tblListings — ready.\n";
 
-try{
+// ── tblOrders ─────────────────────────────────────────────────────────────────
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblOrders (
+    orderID       INT            NOT NULL AUTO_INCREMENT,
+    buyerID       INT            NOT NULL,
+    listingID     INT            NOT NULL,
+    sellerID      INT            NOT NULL,
+    quantity      INT            NOT NULL DEFAULT 1,
+    totalPrice    DECIMAL(10,2)  NOT NULL,
+    deliveryMethod VARCHAR(50),
+    deliveryAddress TEXT,
+    status        ENUM('pending','paid','shipped','delivered','cancelled','refunded')
+                  NOT NULL DEFAULT 'pending',
+    paymentRef    VARCHAR(100)   DEFAULT NULL,
+    createdAt     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt     DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP
+                  ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (orderID),
+    FOREIGN KEY (buyerID)   REFERENCES tblUser(userID)     ON DELETE CASCADE,
+    FOREIGN KEY (listingID) REFERENCES tblListings(listingID) ON DELETE CASCADE,
+    FOREIGN KEY (sellerID)  REFERENCES tblUser(userID)     ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblOrders failed: " . $conn->error . "\n");
+echo "✔  tblOrders — ready.\n";
 
-$conn->query($loadSQL);
+// ── tblOrderItems (future bundled orders) ─────────────────────────────────────
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblOrderItems (
+    itemID      INT           NOT NULL AUTO_INCREMENT,
+    orderID     INT           NOT NULL,
+    listingID   INT           NOT NULL,
+    price       DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (itemID),
+    FOREIGN KEY (orderID)   REFERENCES tblOrders(orderID)      ON DELETE CASCADE,
+    FOREIGN KEY (listingID) REFERENCES tblListings(listingID)  ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblOrderItems failed: " . $conn->error . "\n");
+echo "✔  tblOrderItems — ready.\n\n";
 
-echo " Data loaded from userData.txt successfully.<br>\n";
-echo " Rows affected: " . $conn->affected_rows . "<br>\n";
-} catch (mysqli_sql_exception $e) {
-    // Fallback: manual INSERT if LOAD DATA LOCAL INFILE is disabled on the server
-    echo "LOAD DATA LOCAL INFILE not available – falling back to manual INSERT.<br>\n";
+// ── SEED tblUser only if empty ────────────────────────────────────────────────
+$count = $conn->query("SELECT COUNT(*) c FROM tblUser")->fetch_assoc()['c'];
 
-    $lines = file($dataFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $stmt  = $conn->prepare(
-        "INSERT INTO tblUser (userID, username, firstName, lastName, email, passwordHash, role, status, createdAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    );
+if ($count > 0) {
+    echo "ℹ  tblUser already has $count rows — skipping seed. Pass ?reset=1&confirm=yes to wipe and re-seed.\n";
+} else {
+    echo "ℹ  tblUser is empty — seeding from userData.txt...\n";
 
-    foreach ($lines as $line) {
-        $cols = explode('|', trim($line));
-        if (count($cols) < 9) continue;
-        [$id, $uname, $fn, $ln, $em, $pw, $role, $status, $created] = $cols;
-        $stmt->bind_param("issssssss", $id, $uname, $fn, $ln, $em, $pw, $role, $status, $created);
-        $stmt->execute();
+    $dataFile = realpath(__DIR__ . '/../../userData.txt');
+    $dataFile = $dataFile ? str_replace("\\", "/", $dataFile) : '';
+
+    if (!$dataFile || !file_exists($dataFile)) {
+        echo "✘  userData.txt not found at: " . __DIR__ . "/../../userData.txt\n";
+    } else {
+        $loadSQL = "LOAD DATA LOCAL INFILE '$dataFile'
+                    INTO TABLE tblUser
+                    FIELDS TERMINATED BY '|'
+                    LINES TERMINATED BY '\n'
+                    (userID, username, firstName, lastName, email, passwordHash, role, status, createdAt)";
+
+        if ($conn->query($loadSQL)) {
+            echo "✔  Seeded " . $conn->affected_rows . " rows via LOAD DATA.\n";
+        } else {
+            echo "⚠  LOAD DATA unavailable — using INSERT fallback...\n";
+            $stmt = $conn->prepare(
+                "INSERT IGNORE INTO tblUser
+                 (userID,username,firstName,lastName,email,passwordHash,role,status,createdAt)
+                 VALUES (?,?,?,?,?,?,?,?,?)"
+            );
+            $inserted = 0;
+            foreach (file($dataFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                $c = explode('|', trim($line));
+                if (count($c) < 9) continue;
+                $stmt->bind_param("issssssss",
+                    $c[0],$c[1],$c[2],$c[3],$c[4],$c[5],$c[6],$c[7],$c[8]);
+                $stmt->execute();
+                $inserted++;
+            }
+            $stmt->close();
+            echo "✔  Inserted $inserted rows via prepared statements.\n";
+        }
     }
-    $stmt->close();
-    echo " Data inserted via prepared statements.<br>\n";
 }
+
+$conn->close();
+echo "\n✔  All done. <a href='../../html/home.php'>→ Go to site</a>\n";
+echo "</pre>";

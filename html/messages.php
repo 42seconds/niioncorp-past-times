@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['userID'])) {
+    header('Location: ../php/AuthSystem/login.php'); exit;
+}
+$initials = strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['lastName'],0,1));
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,23 +16,27 @@
 </head>
 <body>
 <nav class="navbar">
-  <div class="navbar-brand" onclick="location.href='home.html'"><div class="logo-icon">P</div><span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span></div>
-  <div class="navbar-nav">
-    <a class="nav-link" href="home.html">Shop</a>
-    <a class="nav-link" href="create-listing.html">Sell</a>
+  <div class="navbar-brand" onclick="location.href='home.php'">
+        <div class="logo-icon">🏠︎</div>
+        <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
+    </div>
+  
+    <div class="navbar-nav">
     <a class="nav-link active">Messages</a>
   </div>
+
   <div class="navbar-actions">
-    <div class="icon-btn" onclick="location.href='favorites.html'">🛒</div>
+    <div class="icon-btn" onclick="location.href='favorites.php'">🛒</div>
     <div class="icon-btn">🔔</div>
-    <div class="avatar-btn" onclick="location.href='settings.html'">LM</div>
+    <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>
+
 <div class="messages-layout">
   <div class="inbox-panel">
     <div class="inbox-header">
       <div class="inbox-title">Inbox</div>
-      <div class="inbox-search"><span>🔍</span><input placeholder="Search buyers &amp; sellers"></div>
+      <div class="inbox-search"><span>🔍︎</span><input placeholder="Search conversations"></div>
     </div>
     <div class="convo-list">
       <div class="convo-item active">
@@ -46,6 +57,8 @@
       </div>
     </div>
   </div>
+
+
   <div class="chat-panel">
     <div class="chat-header">
       <div class="convo-avatar" style="width:38px;height:38px;font-size:13px;">SM</div>
@@ -62,22 +75,37 @@
     </div>
     <div class="chat-messages">
       <div class="chat-date">TODAY</div>
-      <div class="msg-row"><div class="msg-avatar">SM</div><div><div class="msg-bubble received">Hi there! I saw you liked the blazer. Are you still interested?</div><div class="msg-time">13:45</div></div></div>
-      <div class="msg-row sent"><div class="msg-avatar">Me</div><div><div class="msg-bubble sent">Hey! Yes, I love it. Does it have any wear on the elbows?</div><div class="msg-time" style="text-align:left;">13:58</div></div></div>
-      <div class="msg-row"><div class="msg-avatar">SM</div><div><div class="msg-bubble received">It's in great condition! Here's a close up of the fabric.</div><div class="msg-img">🧥</div><div class="msg-time">14:01</div></div></div>
+      <div class="msg-row"><div class="msg-avatar">SM</div><div><div class="msg-bubble received">Hi there! Is the blazer still available?</div><div class="msg-time">13:45</div></div></div>
+      <div class="msg-row sent"><div class="msg-avatar"><?= $initials ?></div><div><div class="msg-bubble sent">Yes it is! In great condition.</div><div class="msg-time" style="text-align:left;">13:58</div></div></div>
     </div>
     <div>
+
       <div class="chat-input-area">
-        <span class="attach-btn">➕</span>
-        <span class="attach-btn">🖼</span>
+        <span class="attach-btn">╋</span>
+        <span class="attach-btn">🗁</span>
         <input class="chat-input" placeholder="Type a message..." id="chat-input-field">
         <button class="send-btn" onclick="sendMsg()">➤</button>
       </div>
       <div class="chat-safety-note">Never share your phone number or email. Keep conversations here.</div>
     </div>
   </div>
+  </div>
 </div>
 <script src="../javascript/script.js"></script>
-<script src="../javascript/ui.js"></script>
+<script>
+function sendMsg() {
+  const input = document.getElementById('chat-input-field');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.querySelector('.chat-messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row sent';
+  row.innerHTML = `<div class="msg-avatar"><?= $initials ?></div><div><div class="msg-bubble sent">${text}</div><div class="msg-time" style="text-align:left;">Just now</div></div>`;
+  msgs.appendChild(row);
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+}
+document.getElementById('chat-input-field').addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(); });
+</script>
 </body>
 </html>
