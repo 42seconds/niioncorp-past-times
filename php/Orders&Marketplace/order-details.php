@@ -1,9 +1,5 @@
 <?php
-/**
- * order-details.php — Full detail view for a single order.
- * Buyer can confirm delivery (which would release escrow).
- * URL: order-details.php?id=ORDER_ID
- */
+
 session_start();
 if (!isset($_SESSION['userID'])) {
     header('Location: ../../html/home.php'); exit;

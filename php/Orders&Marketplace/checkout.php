@@ -1,9 +1,5 @@
 <?php
-/**
- * checkout.php
- * Customer selects delivery method, confirms order, order is saved to tblOrders.
- * URL: checkout.php?id=LISTING_ID
- */
+
 session_start();
 if (!isset($_SESSION['userID'])) {
     header('Location: ../../html/home.php'); exit;

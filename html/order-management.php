@@ -1,10 +1,5 @@
 <?php
-/**
- * order-management.php
- * Seller's dedicated order management page — full detail view,
- * handles accept / mark-shipped / cancel per order.
- * Accessible from sellerDashboard sidebar.
- */
+
 session_start();
 if (!isset($_SESSION['userID'])) {
     header('Location: ../php/AuthSystem/login.php'); exit;

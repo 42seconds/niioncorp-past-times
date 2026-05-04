@@ -1,14 +1,4 @@
 <?php
-/**
- * createTable.php — Past Times
- *
- * SAFE to run at any time. Uses CREATE TABLE IF NOT EXISTS on every table.
- * Only seeds userData.txt if tblUser is empty.
- * Never drops anything unless you explicitly pass ?reset=1 AND ?confirm=yes
- *
- * Normal setup  : /php/BackendLogic/createTable.php
- * Force reset   : /php/BackendLogic/createTable.php?reset=1&confirm=yes
- */
 
 include 'dbConn.php';
 

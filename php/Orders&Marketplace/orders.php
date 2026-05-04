@@ -1,8 +1,5 @@
 <?php
-/**
- * orders.php — Customer's order history
- * Lists all orders placed by the logged-in user.
- */
+
 session_start();
 if (!isset($_SESSION['userID'])) {
     header('Location: ../../html/home.php'); exit;

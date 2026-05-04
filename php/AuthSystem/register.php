@@ -1,15 +1,6 @@
 
 <?php
 
-/**
- * register.php
- * Past Times – New User Self-Registration
- *
- * - Collects: firstName, lastName, username, email, password, confirmPassword
- * - Hashes password with MD5
- * - Saves user with status = 'pending' (admin must verify before login is allowed)
- * - Redirects to login.php with a success notice on completion
- */
 
 session_start();
 require_once(__DIR__ . '/../BackendLogic/dbConn.php');

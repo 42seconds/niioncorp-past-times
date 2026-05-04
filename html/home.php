@@ -47,7 +47,7 @@ $conn->close();
 </head>
 <body>
 
-    <!-- NAVBAR — adapts to guest vs logged-in -->
+    <!-- NAVBAR —-->
   <nav class="navbar">
   <div class="navbar-brand" onclick="location.href='home.php'">
     <div class="logo-icon">P</div>
@@ -209,13 +209,13 @@ $conn->close();
     return;
   }
 
-  // Optimistic UI update
+
   const wasSaved = btn.classList.contains('saved');
   btn.textContent  = wasSaved ? '𖹭' : '❤️';
   btn.title        = wasSaved ? 'Add to Favourites' : 'Remove from Favourites';
   btn.classList.toggle('saved', !wasSaved);
 
-  // Persist to DB
+  // move to DB
   const fd = new FormData();
   fd.append('listingID', id);
 
@@ -230,7 +230,7 @@ $conn->close();
       }
     })
     .catch(() => {
-      // Revert on network error
+      // catch the  error
       btn.textContent = wasSaved ? '❤️' : '𖹭';
       btn.classList.toggle('saved', wasSaved);
     });

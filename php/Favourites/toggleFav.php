@@ -1,12 +1,5 @@
 <?php
-/**
- * toggleFav.php
- * AJAX endpoint — adds or removes a listing from tblFavourites.
- * Called by the heart button on home.php and product-detail.php.
- *
- * POST body: { listingID: int }
- * Returns JSON: { action: "added"|"removed", total: int }
- */
+
 session_start();
 header('Content-Type: application/json');
 

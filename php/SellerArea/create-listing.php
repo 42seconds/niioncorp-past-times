@@ -4,7 +4,7 @@ if (!isset($_SESSION['userID'])) {
     header('Location: ../php/AuthSystem/login.php');
     exit;
 }
-require_once '../BackendLogic/dbConn.php'; // ✓ Correct: php/SellerArea → php/BackendLogic
+require_once '../BackendLogic/dbConn.php'; 
 
 $error   = '';
 $success = '';
@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Image must be under 5MB.";
             } else {
                 $filename  = uniqid('listing_', true) . '.' . $ext;
-                $imagePath = 'php/uploads/listings/' . $filename; // ⚠ IMAGE PATH: stored with php/ prefix so html/ pages resolve correctly with src='../{imagePath}'
-                move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
+                $imagePath = 'php/uploads/listings/' . $filename;
+                                move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
             }
         }
 
@@ -174,16 +174,16 @@ $conn->close();
           <span class="price-prefix">R</span>
           <input class="form-input" type="number" name="price" min="1" step="0.01" placeholder="0.00" required>
         </div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">🌿 Zero selling fees — keep 100%</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:8px;"> Zero selling fees — keep 100%</div>
       </div>
 
       <div class="listing-section">
         <div class="listing-section-title">Delivery Options</div>
         <div class="delivery-grid">
-          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Paxi"> 📦 Paxi Point</label>
-          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="PUDO"> 🔒 PUDO Locker</label>
-          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Aramex"> ⚡ Aramex</label>
-          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Collection"> 🤝 Collection</label>
+          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Paxi"> Paxi Point</label>
+          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="PUDO">  PUDO Locker</label>
+          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Aramex">  Aramex</label>
+          <label class="delivery-option"><input type="checkbox" name="delivery[]" value="Collection">  Collection</label>
         </div>
       </div>
     </div>

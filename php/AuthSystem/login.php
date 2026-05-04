@@ -1,17 +1,5 @@
 
 <?php
-/**
- * login.php
- * Past Times – Customer Login Page
- *
- * - Accepts username + email + password
- * - Compares password to MD5 hash stored in tblUser
- * - HTML5 validation on all fields
- * - On success: shows user data via associative fetch + "User X is logged in" banner
- * - On failure: sticky form redisplays entered values with error message
- * - New users can register (link to register.php)
- * - Unverified users cannot log in (status must be 'verified')
- */
 
 session_start();
 

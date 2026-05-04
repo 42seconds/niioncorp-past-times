@@ -165,7 +165,7 @@ $conn->close();
 
     <script src="../javascript/script.js"></script>
     <script>
-        // Remove a favourite — updates UI without page reload
+        // Remove a favourite in the database and the favorite page
         function handleFav(btn, id) {
             const card = btn.closest('.product-card');
 
@@ -180,13 +180,13 @@ $conn->close();
                         return;
                     }
                     if (data.action === 'removed') {
-                        // Animate out and remove card
+                        // Animate removal
                         card.style.transition = 'opacity .3s, transform .3s';
                         card.style.opacity = '0';
                         card.style.transform = 'scale(0.9)';
                         setTimeout(() => {
                             card.remove();
-                            // Show empty state if grid is now empty
+                            // Show empty if empty
                             const remaining = document.querySelectorAll('#favGrid .product-card');
                             if (remaining.length === 0) {
                                 document.getElementById('favGrid').innerHTML = `
@@ -203,7 +203,7 @@ $conn->close();
                 .catch(err => console.error('Toggle fav error:', err));
         }
 
-        // Live search filter
+        // search filter
         function filterFavs(query) {
             const q = query.toLowerCase();
             document.querySelectorAll('#favGrid .product-card').forEach(card => {
@@ -212,7 +212,7 @@ $conn->close();
             });
         }
 
-        // Sort buttons
+        // Sort 
         function switchSort(btn) {
             document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -223,7 +223,7 @@ $conn->close();
             if (btn.textContent.includes('Price')) {
                 cards.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
             } else {
-                // Recently Added: restore DB DESC order using listingID as proxy
+                // Recently Added: 
                 cards.sort((a, b) => parseInt(b.dataset.id) - parseInt(a.dataset.id));
             }
             cards.forEach(c => grid.appendChild(c));
