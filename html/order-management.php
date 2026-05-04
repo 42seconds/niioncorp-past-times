@@ -87,8 +87,7 @@ $statusColour = [
   <title>Order Management – Past Times</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-      <link rel="stylesheet" href="../css/responsive.css">
-
+  <link rel="stylesheet" href="../css/responsive.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body{background:var(--cream);font-family:var(--font-body);}
@@ -177,14 +176,14 @@ $statusColour = [
       <div class="order-thumb">
         <?php if (!empty($o['imagePath'])): ?>
           <img src="../<?= htmlspecialchars($o['imagePath']) ?>" alt="">
-        <?php else: ?>📦<?php endif; ?>
+       <?php endif; ?>
       </div>
       <div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
           <span style="font-size:12px;font-weight:700;color:var(--text-muted);">ORDER #<?= $o['orderID'] ?></span>
           <span class="sb" style="background:<?= $sc['bg'] ?>;color:<?= $sc['c'] ?>;border:1px solid <?= $sc['b'] ?>;"><?= strtoupper($o['status']) ?></span>
           <?php if ($o['status'] === 'paid'): ?>
-            <span style="font-size:11px;font-weight:700;color:var(--primary);">⚡ ACTION REQUIRED</span>
+            <span style="font-size:11px;font-weight:700;color:var(--primary);">ACTION REQUIRED</span>
           <?php endif; ?>
         </div>
         <div style="font-weight:600;font-size:16px;margin-bottom:6px;"><?= htmlspecialchars($o['title']) ?></div>
@@ -199,9 +198,9 @@ $statusColour = [
       <div style="text-align:right;flex-shrink:0;">
         <div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--primary);">R <?= number_format($o['totalPrice'],2) ?></div>
         <?php if ($o['status'] === 'delivered'): ?>
-          <div style="font-size:11px;color:#1a5c35;font-weight:600;margin-top:4px;">✅ Earnings Released</div>
+          <div style="font-size:11px;color:#1a5c35;font-weight:600;margin-top:4px;">Earnings Released</div>
         <?php elseif ($o['status'] === 'shipped'): ?>
-          <div style="font-size:11px;color:#1a3c8b;font-weight:600;margin-top:4px;">🛡 In Escrow</div>
+          <div style="font-size:11px;color:#1a3c8b;font-weight:600;margin-top:4px;">In Escrow</div>
         <?php endif; ?>
       </div>
     </div>
@@ -210,18 +209,18 @@ $statusColour = [
     <div class="order-actions">
       <?php if ($o['status'] === 'paid'): ?>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:13px;font-weight:700;color:#1a3c8b;">⚡ New order — enter tracking below to accept and ship.</span>
+          <span style="font-size:13px;font-weight:700;color:#1a3c8b;">New order — enter tracking below to accept and ship.</span>
           <form method="POST" style="display:inline;">
             <input type="hidden" name="orderID" value="<?= $o['orderID'] ?>">
             <button class="btn btn-sm" name="action" value="cancel"
               style="background:#fce8e8;color:#8b1a14;border:1px solid #f5b7b7;"
               onclick="return confirm('Decline order #<?= $o['orderID'] ?>?')">✕ Decline</button>
           </form>
-          <a href="messages.php?buyer=<?= $o['buyerUID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a>
+          <!--- <a href="messages.php?buyer=<?= $o['buyerUID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a> -->
         </div>
 
       <?php elseif ($o['status'] === 'pending'): ?>
-        <span style="font-size:13px;color:var(--text-muted);">⏳ Awaiting buyer payment.</span>
+        <span style="font-size:13px;color:var(--text-muted);">Awaiting buyer payment.</span>
         <form method="POST">
           <input type="hidden" name="orderID" value="<?= $o['orderID'] ?>">
           <button class="btn btn-sm" name="action" value="cancel"
@@ -229,10 +228,10 @@ $statusColour = [
         </form>
 
       <?php elseif ($o['status'] === 'shipped'): ?>
-        <div style="font-size:13px;color:#1a5c35;font-weight:600;">🚐 Item shipped — awaiting buyer confirmation to release escrow.</div>
+        <div style="font-size:13px;color:#1a5c35;font-weight:600;"> Item shipped — awaiting buyer confirmation to release escrow.</div>
 
       <?php elseif ($o['status'] === 'delivered'): ?>
-        <div style="font-size:13px;color:#1a5c35;font-weight:600;">✅ Order complete — R <?= number_format($o['totalPrice'],2) ?> released to your wallet.</div>
+        <div style="font-size:13px;color:#1a5c35;font-weight:600;"> Order complete — R <?= number_format($o['totalPrice'],2) ?> released to your wallet.</div>
 
       <?php elseif ($o['status'] === 'cancelled'): ?>
         <div style="font-size:13px;color:#8b1a14;">✕ This order was cancelled.</div>
@@ -245,7 +244,7 @@ $statusColour = [
       <input type="hidden" name="orderID" value="<?= $o['orderID'] ?>">
       <input class="form-input" name="tracking" placeholder="Waybill / Tracking number (PUDO, Aramex, Paxi...)"
         style="padding:8px 12px;font-size:13px;" required>
-      <button class="btn btn-secondary btn-sm" name="action" value="ship">🚐 Mark as Shipped</button>
+      <button class="btn btn-secondary btn-sm" name="action" value="ship"> Mark as Shipped</button>
     </form>
     <?php endif; ?>
 
@@ -267,5 +266,19 @@ $statusColour = [
 
 </div><!-- end page-wrap -->
 <script src="../javascript/script.js"></script>
+<script>
+function toggleSidebar() {
+  var s = document.querySelector(".sidebar, .settings-side");
+  if (s) s.classList.toggle("open");
+  var o = document.getElementById("sidebarOverlay");
+  if (o) o.classList.toggle("active");
+}
+function closeSidebar() {
+  var s = document.querySelector(".sidebar, .settings-side");
+  if (s) s.classList.remove("open");
+  var o = document.getElementById("sidebarOverlay");
+  if (o) o && o.classList.remove("active");
+}
+</script>
 </body>
 </html>

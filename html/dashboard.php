@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if (!isset($_SESSION['userID'])) {
@@ -64,8 +63,6 @@ $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
   <title>My Dashboard – Past Times</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-      <link rel="stylesheet" href="../css/responsive.css">
-
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ── Status badges ── */
@@ -100,6 +97,9 @@ $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
   </style>
 </head>
 <body>
+<!-- HAMBURGER (mobile) -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <div class="dashboard-layout">
 
   <!-- SIDEBAR -->
@@ -116,7 +116,7 @@ $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
           <span style="margin-left:auto;background:var(--primary);color:white;font-size:10px;padding:1px 7px;border-radius:999px;"><?= $orderStats['shipped'] ?></span>
         <?php endif; ?>
       </div>
-     <!-- <div class="sidebar-link" onclick="location.href='messages.php'"> Messages</div> -->
+      <div class="sidebar-link" onclick="location.href='messages.php'"> Messages</div>
       <div class="sidebar-link" onclick="location.href='favorites.php'"> Favourites</div>
       <div class="sidebar-link" onclick="location.href='settings.php'"> Settings</div>
     </div>
@@ -158,7 +158,7 @@ $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
     <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
       <a href="home.php" class="btn btn-primary">Shop Now</a>
       <a href="../php/Orders&Marketplace/orders.php" class="btn btn-secondary"> All Orders</a>
-      <a href="messages.php" class="btn btn-secondary"> Messages</a>
+     
       <a href="favorites.php" class="btn btn-secondary"> Favourites</a>
     </div>
 
@@ -250,5 +250,18 @@ $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
   </div>
 </div>
 <script src="../javascript/script.js"></script>
+<script>
+function toggleSidebar() {
+  document.querySelector(".sidebar").classList.toggle("open");
+  document.getElementById("sidebarOverlay").classList.toggle("active");
+}
+function closeSidebar() {
+  document.querySelector(".sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("active");
+}
+document.querySelectorAll(".sidebar-link").forEach(function(link){
+  link.addEventListener("click", closeSidebar);
+});
+</script>
 </body>
 </html>

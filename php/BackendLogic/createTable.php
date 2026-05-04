@@ -105,6 +105,24 @@ CREATE TABLE IF NOT EXISTS tblOrderItems (
 ") or die("✘ tblOrderItems failed: " . $conn->error . "\n");
 echo "✔  tblOrderItems — ready.\n\n";
 
+
+// ── tblFavourites ─────────────────────────────────────────────────────────────
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblFavourites (
+    favID       INT      NOT NULL AUTO_INCREMENT ,
+    userID      INT      NOT NULL,
+    listingID   INT      NOT NULL,
+    createdAt   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (favID),
+    UNIQUE KEY unique_fav (userID, listingID),
+    FOREIGN KEY (userID)    REFERENCES tblUser(userID)     ON DELETE CASCADE,
+    FOREIGN KEY (listingID) REFERENCES tblListings(listingID) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblFavourites failed: " . $conn->error . "\n");
+echo "✔  tblFavourites — ready.\n\n";
+
+
+
 // ── SEED tblUser only if empty ────────────────────────────────────────────────
 $count = $conn->query("SELECT COUNT(*) c FROM tblUser")->fetch_assoc()['c'];
 
