@@ -334,7 +334,7 @@ $conn->close();
         <button class="admin-mobile-menu" onclick="document.querySelector('.navbar-nav').style.cssText=document.querySelector('.navbar-nav').style.display==='flex'?'display:none':'display:flex;position:absolute;top:64px;left:0;right:0;background:white;padding:16px;flex-direction:column;gap:8px;border-bottom:1px solid var(--border);z-index:99'">☰</button>
         <div class="navbar-actions">
             <div class="avatar-btn" onclick="location.href='../../html/settings.php'" title="Settings"><?= $initials ?></div>
-            <a href="../admin_login.php?logout=1" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
+            <a href="../AuthSystem/logout.php" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
         </div>
     </nav>
 

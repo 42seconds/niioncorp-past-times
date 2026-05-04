@@ -253,28 +253,31 @@ $conn->close();
             </span>
         </div>
 
-    <div class="navbar-nav">
-            <?php if ($isAdmin): ?>
-                <a class="nav-link" href="../php/AdminArea/adminDashboard.php">Dashboard</a>
-                <a class="nav-link" href="../php/AdminArea/userManagement.php">Users</a>
-                <a class="nav-link" href="../php/AdminArea/listingManagement.php">Listings</a>
+                <div class="navbar-nav">
+                <?php if ($isAdmin): ?>
+                    <a class="nav-link" href="../php/AdminArea/adminDashboard.php">Dashboard</a>
+                    <a class="nav-link" href="../php/AdminArea/userManagement.php">Users</a>
+                    <a class="nav-link" href="../php/AdminArea/listingManagement.php">Listings</a>
 
-            <?php elseif ($isSeller): ?>
-                <a class="nav-link" href="../php/SellerArea/sellerDashboard.php">My Dashboard</a>
-                <a class="nav-link" href="../php/SellerArea/create-listing.php">Sell</a>
+                <?php elseif ($isSeller): ?>
+                    <a class="nav-link" href="../php/SellerArea/sellerDashboard.php">My Dashboard</a>
+                    <a class="nav-link" href="../php/SellerArea/create-listing.php">Sell</a>
 
-            <?php else: ?>
-                <a class="nav-link" href="home.php">Explore</a>
-                <a class="nav-link" href="favourites.php">Favourites</a>
-            <?php endif; ?>
+                <?php else: ?>
+                    <a class="nav-link" href="home.php">Explore</a>
+                    <a class="nav-link" href="favourites.php">Favourites</a>
+                <?php endif; ?>
+            </div>
 
             <div class="navbar-actions">
-                <div class="icon-btn avatar-btn" style="cursor:default;"><?= $initials ?></div>
-                <?php if ($isAdmin): ?>
-                    <a href="../php/admin_login.php?logout=1" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
-                <?php else: ?>
-                    <a href="../php/AuthSystem/logout.php" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
-                <?php endif; ?>
+                <div class="icon-btn avatar-btn" style="cursor:default;">
+                    <?= $initials ?>
+                </div>
+
+                <a href="../php/AuthSystem/logout.php"
+                style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">
+                Log Out
+                </a>
             </div>
     </nav>
 
@@ -319,7 +322,7 @@ $conn->close();
                 <div class="settings-nav-section">Account Actions</div>
                 <div class="settings-nav-link" onclick="showSection(this,'s-danger')" style="color:#8b1a14;">⚠  Danger Zone</div>
 
-                <a class="signout-link" href="<?= $isAdmin ? '../php/admin_login.php?logout=1' : '../php/AuthSystem/logout.php' ?>">⚠  Sign Out</a>
+                <a class="signout-link" href="<?= $isAdmin ? '../php/AuthSystem/logout.php' : '../php/AuthSystem/logout.php' ?>">⚠  Sign Out</a>
             </div>
         </div>
 

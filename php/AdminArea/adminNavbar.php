@@ -15,6 +15,6 @@ $initials    = strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['l
   </div>
   <div class="navbar-actions">
     <div class="avatar-btn" onclick="location.href='../../html/settings.php'" title="Settings"><?= $initials ?></div>
-    <a href="../admin_login.php?logout=1" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
+    <a href="../AuthSystem/logout.php" style="font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;margin-left:12px;">Log Out</a>
   </div>
 </nav>

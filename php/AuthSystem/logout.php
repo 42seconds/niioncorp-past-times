@@ -3,6 +3,7 @@ session_start();
 
 // Unset all session variables
 $_SESSION = [];
+session_unset();
 
 // Destroy the session
 session_destroy();
@@ -17,5 +18,5 @@ if (ini_get("session.use_cookies")) {
 }
 
 // Redirect to login page
-header("Location: login.php");
+header("Location: login.php"); // login.php is in the same AuthSystem/ folder
 exit;
