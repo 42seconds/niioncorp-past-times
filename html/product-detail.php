@@ -57,7 +57,7 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
     <?php if ($loggedIn): ?>
       <a class="nav-link" href="favorites.php">Favourites</a>
     <?php endif; ?>
-    <a class="nav-link" href="contactUs.html">Contact</a>
+    <a class="nav-link" href="contactUs.php">Contact</a>
   </div>
   <div class="navbar-actions">
     <?php if ($loggedIn): ?>
@@ -135,7 +135,7 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
         <button class="btn btn-primary btn-lg" onclick="location.href='../php/Orders&Marketplace/checkout.php?id=<?= $p['listingID'] ?>'">Buy Now — R <?= number_format($p['price'],2) ?></button>
         <div class="action-row">
           <button class="btn btn-secondary" onclick="addToFav(<?= $p['listingID'] ?>)">❤️ Save</button>
-          <!-- <button class="btn btn-teal" onclick="location.href='messages.php?listing=<?= $p['listingID'] ?>&seller=<?= $p['ownerID'] ?>'">Message Seller</button> -->
+          <button class="btn btn-teal" onclick="location.href='messages.php?listing=<?= $p['listingID'] ?>&seller=<?= $p['ownerID'] ?>'">Message Seller</button> 
         </div>
       <?php else: ?>
 

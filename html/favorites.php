@@ -74,7 +74,7 @@ $conn->close();
         </div>
 
         <div class="navbar-actions">
-            <div class="icon-btn" onclick="location.href='favorites.php'" title="Favourites">🛒</div>
+            <div class="icon-btn" onclick="location.href='cart.php'" title="Cart">🛒</div>
             <div class="icon-btn">🔔</div>
             <div class="avatar-btn" onclick="location.href='dashboard.php'" title="My Dashboard"><?= $initials ?></div>
         </div>
@@ -137,6 +137,19 @@ $conn->close();
                     <div class="product-meta"><?= htmlspecialchars($item['category']) ?> • <?= htmlspecialchars($item['condition_']) ?></div>
                     <div class="product-price">R <?= number_format($item['price'], 2) ?></div>
                     <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@<?= htmlspecialchars($item['username']) ?></div>
+                    <div style="margin-top:10px;display:flex;gap:6px;" onclick="event.stopPropagation()">
+                        <button class="btn btn-primary btn-sm"
+                                style="font-size:12px;padding:6px 14px;"
+                                onclick="addToCart(this, <?= $item['listingID'] ?>)">
+                            🛒 Add to Cart
+                        </button>
+                        <a href="../php/Orders&Marketplace/checkout.php?id=<?= $item['listingID'] ?>"
+                           class="btn btn-secondary btn-sm"
+                           style="font-size:12px;padding:6px 14px;"
+                           onclick="event.stopPropagation()">
+                            Buy Now
+                        </a>
+                    </div>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -165,6 +178,29 @@ $conn->close();
 
     <script src="../javascript/script.js"></script>
     <script>
+function addToCart(btn, listingID) {
+    btn.disabled = true;
+    btn.textContent = '...';
+    const fd = new FormData();
+    fd.append('action','add');
+    fd.append('listingID', listingID);
+    fetch('../php/Cart/cartAction.php', {method:'POST', body:fd})
+        .then(r => r.json())
+        .then(data => {
+            if (data.error === 'not_logged_in') { location.href='../php/AuthSystem/login.php'; return; }
+            if (data.action === 'added') {
+                btn.textContent = '✔ In Cart';
+                btn.style.background = '#e6faf0';
+                btn.style.color = '#1a5c35';
+                btn.style.border = '1px solid #b2dbd7';
+            } else {
+                btn.textContent = '🛒 Add to Cart';
+                btn.disabled = false;
+            }
+        })
+        .catch(() => { btn.textContent = '🛒 Add to Cart'; btn.disabled = false; });
+}
+
         // Remove a favourite in the database and the favorite page
         function handleFav(btn, id) {
             const card = btn.closest('.product-card');

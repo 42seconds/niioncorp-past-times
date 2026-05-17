@@ -137,8 +137,8 @@ $initials = $loggedIn
     <div class="footer-bottom">
         <span class="footer-brand-name">Past Times</span>
         <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted);">
-            <a href="about.html">About</a>
-            <a href="contactUs.html">Contact</a>
+            <a href="about.php">About</a>
+            <a href="contactUs.php">Contact</a>
             <span>Terms of Service</span>
         </div>
 

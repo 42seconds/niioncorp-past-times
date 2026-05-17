@@ -62,12 +62,13 @@ $conn->close();
     <a class="nav-link" href="about.php">About</a>
     <?php if ($loggedIn): ?>
       <a class="nav-link" href="favorites.php">Favourites</a>
+      
     <?php endif; ?>
     <a class="nav-link" href="contactUs.php">Contact</a>
   </div>
   <div class="navbar-actions">
     <?php if ($loggedIn): ?>
-      <div class="icon-btn" onclick="location.href='favorites.php'" title="Favourites">🛒</div>
+      <div class="icon-btn" onclick="location.href='cart.php'" title="cart">🛒</div>
       <div class="icon-btn">🔔</div>
       <div class="avatar-btn" onclick="location.href='dashboard.php'" title="My Dashboard"><?= $initials ?></div>
     <?php else: ?>
@@ -146,6 +147,15 @@ $conn->close();
         <div class="product-meta"><?= htmlspecialchars($item['category']) ?> • <?= htmlspecialchars($item['condition_']) ?></div>
         <div class="product-price">R <?= number_format($item['price'],2) ?></div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@<?= htmlspecialchars($item['username']) ?></div>
+        <?php if ($loggedIn): ?>
+        <div style="margin-top:10px;display:flex;gap:6px;" onclick="event.stopPropagation()">
+            <button class="btn btn-primary btn-sm cart-btn" data-id="<?= $item['listingID'] ?>"
+                    style="font-size:12px;padding:6px 14px;width:100%;"
+                    onclick="addToCart(this, <?= $item['listingID'] ?>)">
+                🛒 Add to Cart
+            </button>
+        </div>
+        <?php endif; ?>
       </div>
     </div>
     <?php endwhile; else: ?>
@@ -170,7 +180,9 @@ $conn->close();
                     <h4>Marketplace</h4><span>Secure Escrow via Ozow</span><span>Paxi Points</span><span>PUDO Lockers</span>
                 </div>
                 <div class="footer-col">
-                    <h4>Company</h4><a href="about.php">About Us</a><a href="contactUs.php">Contact</a>
+                    <h4>Company</h4>
+                    <a href="about.php">About Us</a>
+                    <a href="contactUs.php">Contact</a>
                 </div>
             </div>
             <div class="footer-bottom"><span>© 2026 Past Times Marketplace</span>
@@ -236,6 +248,26 @@ $conn->close();
     });
 }
 
+        
+function addToCart(btn, listingID) {
+    if (!isLoggedIn) { if(confirm('Log in to add to cart?')) location.href='../php/AuthSystem/login.php'; return; }
+    btn.disabled = true;
+    btn.textContent = '...';
+    const fd = new FormData();
+    fd.append('action','add'); fd.append('listingID', listingID);
+    fetch('../php/Cart/cartAction.php', {method:'POST',body:fd})
+        .then(r=>r.json())
+        .then(data=>{
+            if(data.error==='not_logged_in'){location.href='../php/AuthSystem/login.php';return;}
+            if(data.action==='added'){
+                btn.textContent='✔ In Cart';
+                btn.style.cssText='font-size:12px;padding:6px 14px;width:100%;background:#e6faf0;color:#1a5c35;border:1px solid #b2dbd7;border-radius:999px;';
+            } else {
+                btn.textContent='🛒 Add to Cart'; btn.disabled=false;
+            }
+        })
+        .catch(()=>{btn.textContent='🛒 Add to Cart';btn.disabled=false;});
+}
         </script>
 </body>
 

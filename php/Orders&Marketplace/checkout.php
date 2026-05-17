@@ -55,6 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($ins->execute()) {
             $orderID = $conn->insert_id;
             $success = true;
+            // Remove from cart if it was added via cart
+            $buyerID2 = (int)$_SESSION['userID'];
+            $dc = $conn->prepare("DELETE FROM tblCart WHERE userID=? AND listingID=?");
+            if ($dc) { $dc->bind_param('ii', $buyerID2, $listingID); $dc->execute(); $dc->close(); }
         } else {
             $error = "Could not place order: " . $conn->error;
         }
@@ -72,7 +76,7 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
-      <link rel="stylesheet" href="../css/responsive.css">
+      <link rel="stylesheet" href="../../css/responsive.css">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -260,3 +264,4 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
 <script src="../../javascript/script.js"></script>
 </body>
 </html>
+ 

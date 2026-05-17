@@ -68,9 +68,9 @@ $validTabs   = ['paid', 'pending', 'shipped', 'delivered', 'cancelled'];
 if (!in_array($orderFilter, $validTabs)) $orderFilter = 'paid';
 
 $ordersStmt = $conn->prepare("
-    SELECT o.orderID, o.status, o.totalPrice, o.deliveryMethod, o.deliveryAddress, o.createdAt,
-           l.title, l.imagePath, l.category, l.listingID,
-           u.username AS buyerName, u.firstName AS buyerFirst, u.lastName AS buyerLast
+SELECT o.orderID, o.buyerID, o.status, o.totalPrice, o.deliveryMethod, o.deliveryAddress, o.createdAt,
+       l.title, l.imagePath, l.category, l.listingID,
+       u.username AS buyerName, u.firstName AS buyerFirst, u.lastName AS buyerLast
     FROM tblOrders o
     JOIN tblListings l ON o.listingID = l.listingID
     JOIN tblUser u     ON o.buyerID   = u.userID
@@ -364,7 +364,7 @@ if (isset($_GET['msg'])) {
                 </div>
 
                 <div class="sidebar-link" onclick="location.href='create-listing.php'"> New Listing</div>
-                <!--- <div class="sidebar-link" onclick="location.href='../../html/messages.php'"> Messages</div> -->
+                <div class="sidebar-link" onclick="location.href='messages.php'"> Messages</div>
                 <div class="sidebar-link" onclick="location.href='../../html/settings.php'"> Settings</div>
             </div>
             <div class="sidebar-footer">
@@ -503,13 +503,13 @@ if (isset($_GET['msg'])) {
                                                 style="background:#fce8e8;color:#8b1a14;border:1px solid #f5b7b7;"
                                                 onclick="return confirm('Decline and cancel order #<?= $o['orderID'] ?>?')">✕ Decline</button>
                                         </form>
-                                        <a href="../../html/messages.php" class="btn btn-secondary btn-sm">💬 Message Buyer</a>
+                                        <a href="messages.php?to=<?= $o['buyerID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a>
                                     </div>
 
                                 <?php elseif ($o['status'] === 'pending'): ?>
                                     <!-- Awaiting payment — just show info -->
                                     <div style="font-size:13px;color:var(--text-muted);">Awaiting payment from buyer.</div>
-                                    <a href="../../html/messages.php" class="btn btn-secondary btn-sm">Message Buyer</a>
+                                    <a href="messages.php?to=<?= $o['buyerID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a>
 
                                 <?php elseif ($o['status'] === 'shipped'): ?>
                                     <!-- Already shipped — awaiting buyer confirmation -->
@@ -552,7 +552,19 @@ if (isset($_GET['msg'])) {
             <div class="sec">
                 <div class="sec-header">
                     <div class="sec-title">My Listings</div>
-                    <a href="create-listing.php" style="font-size:13px;color:var(--primary);font-weight:600;text-decoration:none;">+ Add New</a>
+
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <a href="myListings.php"
+                        style="font-size:13px;color:var(--text-muted);font-weight:600;text-decoration:none;">
+                            View All →
+                        </a>
+
+                        <a href="create-listing.php"
+                        style="font-size:13px;color:var(--primary);font-weight:600;text-decoration:none;">
+                            + Add New
+                        </a>
+                    </div>
+                    
                 </div>
                 <?php
                 $listingEmoji = fn($c) => match (strtolower($c)) {

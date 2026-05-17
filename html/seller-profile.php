@@ -94,7 +94,7 @@ $sellerInitials = strtoupper(substr($seller['firstName'], 0, 1) . substr($seller
             <div class="profile-actions">
                 <?php if ($loggedIn && (int)$_SESSION['userID'] !== $sellerID): ?>
                     <button class="btn btn-primary">Follow</button>
-                 <!--   <button class="btn btn-secondary" onclick="location.href='messages.php?seller=<?= $sellerID ?>'"> Message</button> -->
+                 <button class="btn btn-secondary" onclick="location.href='messages.php?seller=<?= $sellerID ?>'"> Message</button> 
                 <?php elseif (!$loggedIn): ?>
                     <button class="btn btn-primary" onclick="location.href='../php/AuthSystem/register.php'">Sign Up to Follow</button>
                 <?php endif; ?>

@@ -34,7 +34,13 @@ $stmt->execute();
 $recentOrders = $stmt->get_result();
 $stmt->close();
 
-// ── Favourites count (placeholder until tblFavourites exists) ─────────────────
+// ── Cart count ──────────────────────────────────────────────────────────────────
+$cartCount = 0;
+try {
+    $cr = $conn->query("SELECT COUNT(*) c FROM tblCart WHERE userID=$userID");
+    if ($cr) $cartCount = (int)$cr->fetch_assoc()['c'];
+} catch (Exception $e) {}
+// ── Favourites count ─────────────────────────────────────────────────────────
 $favCount = 0;
 
 $conn->close();
@@ -269,6 +275,11 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
                         <span style="margin-left:auto;background:var(--primary);color:white;font-size:10px;padding:1px 7px;border-radius:999px;"><?= $orderStats['shipped'] ?></span>
                     <?php endif; ?>
                 </div>
+                <div class="sidebar-link" onclick="location.href='cart.php'"> My Cart
+                    <?php if ($cartCount > 0): ?>
+                        <span style="margin-left:auto;background:var(--primary);color:white;font-size:10px;padding:1px 7px;border-radius:999px;"><?= $cartCount ?></span>
+                    <?php endif; ?>
+                </div>
                 <div class="sidebar-link" onclick="location.href='messages.php'"> Messages</div>
                 <div class="sidebar-link" onclick="location.href='favorites.php'"> Favourites</div>
                 <div class="sidebar-link" onclick="location.href='settings.php'"> Settings</div>
@@ -322,8 +333,8 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
             <!-- QUICK ACTIONS -->
             <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
                 <a href="home.php" class="btn btn-primary">Shop Now</a>
+                <a href="cart.php" class="btn btn-secondary">🛒 My Cart<?php if($cartCount>0): ?> (<?= $cartCount ?>)<?php endif; ?></a>
                 <a href="../php/Orders&Marketplace/orders.php" class="btn btn-secondary"> All Orders</a>
-
                 <a href="favorites.php" class="btn btn-secondary"> Favourites</a>
             </div>
 
