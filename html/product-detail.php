@@ -19,8 +19,11 @@ $p = $result->fetch_assoc();
 $stmt->close();
 $conn->close();
 
-$loggedIn      = isset($_SESSION['userID']);
-$isOwner       = $loggedIn && (int)$_SESSION['userID'] === (int)$p['ownerID'];
+$isAdmin       = isset($_SESSION['adminID']) && ($_SESSION['role'] ?? '') === 'admin';
+$loggedIn      = isset($_SESSION['userID']) || $isAdmin;
+$activeUID     = $isAdmin ? (int)$_SESSION['adminID'] : (int)($_SESSION['userID'] ?? 0);
+$isOwner       = !$isAdmin && $loggedIn && (int)($_SESSION['userID'] ?? 0) === (int)$p['ownerID'];
+$isSeller      = $loggedIn && ($_SESSION['role'] ?? '') === 'seller';
 $initials      = $loggedIn ? strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['lastName'],0,1)) : '';
 $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,1));
 ?>
@@ -102,7 +105,7 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
       <div class="seller-avatar"><?= $sellerInitials ?></div>
       <div style="flex:1;">
         <div class="seller-name">@<?= htmlspecialchars($p['username']) ?></div>
-        <div class="seller-stats">★★★★★ Trusted Seller</div>
+        <div class="seller-stats">Trusted Seller</div>
         <div class="seller-response">View full profile →</div>
       </div>
      
@@ -128,14 +131,23 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
       <?php if ($isOwner): ?>
         <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:12px 16px;font-size:13px;color:#7a4f00;">
           This is your listing. Manage it from your 
-          <a href="dashboard.php" style="color:var(--primary);font-weight:600;">dashboard</a>.
+          <a href="../php/SellerArea/sellerDashboard.php" style="color:var(--primary);font-weight:600;">dashboard</a>.
+        </div>
+
+      <?php elseif ($isSeller || $isAdmin): ?>
+        <!-- Sellers and admins cannot purchase -->
+        <div style="background:#e8f0fe;border:1px solid #c5d5fb;border-radius:8px;padding:14px 16px;font-size:13px;color:#1a3c8b;">
+          <?= $isSeller ? '🏪 As a seller, you cannot purchase items on the platform.' : '🔒 Admins cannot place orders.' ?>
+          <?php if ($isSeller): ?>
+          <div style="margin-top:8px;"><a href="messages.php?listing=<?= $p['listingID'] ?>&seller=<?= $p['ownerID'] ?>" style="color:var(--primary);font-weight:600;">Message Seller →</a></div>
+          <?php endif; ?>
         </div>
 
       <?php elseif ($loggedIn): ?>
         <button class="btn btn-primary btn-lg" onclick="location.href='../php/Orders&Marketplace/checkout.php?id=<?= $p['listingID'] ?>'">Buy Now — R <?= number_format($p['price'],2) ?></button>
         <div class="action-row">
           <button class="btn btn-secondary" onclick="addToFav(<?= $p['listingID'] ?>)">❤️ Save</button>
-          <button class="btn btn-teal" onclick="location.href='messages.php?listing=<?= $p['listingID'] ?>&seller=<?= $p['ownerID'] ?>'">Message Seller</button> 
+          <button class="btn btn-teal" onclick="location.href='messages.php?listing=<?= $p['listingID'] ?>&seller=<?= $p['ownerID'] ?>'">Message Seller</button>
         </div>
       <?php else: ?>
 

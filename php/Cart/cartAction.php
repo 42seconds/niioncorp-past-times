@@ -1,3 +1,5 @@
+Copy
+
 <?php
 session_start();
 header('Content-Type: application/json');
@@ -7,6 +9,10 @@ $userID=(int)$_SESSION['userID'];
 $action=$_POST['action']??'';
 $listingID=(int)($_POST['listingID']??0);
 if(!$listingID){echo json_encode(['error'=>'invalid']);exit;}
+// Sellers cannot add to cart or purchase
+if(isset($_SESSION['role']) && in_array($_SESSION['role'],['seller','admin'])){
+    echo json_encode(['error'=>'sellers_cannot_buy']); exit;
+}
 if($action==='add'){
     $s=$conn->prepare("SELECT sellerID FROM tblListings WHERE listingID=? AND status='approved'");
     $s->bind_param("i",$listingID);$s->execute();$l=$s->get_result()->fetch_assoc();$s->close();

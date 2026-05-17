@@ -335,7 +335,7 @@ $conn->close();
                 </div>
 
                 <div style="margin-top:12px;">
-                    <a href="home.php" style="font-size:13px;color:var(--text-muted);font-weight:600;text-decoration:none;">← Continue Shopping</a>
+                    <a href="home.php" class="btn btn-primary" style="background: #076c44;" >← Continue Shopping</a>
                 </div>
             </div>
         <?php endif; ?>

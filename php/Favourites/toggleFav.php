@@ -14,6 +14,12 @@ require_once '../BackendLogic/dbConn.php';
 $userID    = (int)$_SESSION['userID'];
 $listingID = (int)($_POST['listingID'] ?? 0);
 
+// Sellers cannot save favourites (they can't purchase)
+if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['seller','admin'])) {
+    echo json_encode(['error' => 'sellers_cannot_favourite']);
+    exit;
+}
+
 if ($listingID <= 0) {
     echo json_encode(['error' => 'invalid_listing']);
     exit;

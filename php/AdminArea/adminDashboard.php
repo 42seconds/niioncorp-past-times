@@ -347,7 +347,15 @@ $conn->close();
                 <h1>Admin Dashboard</h1>
                 <p>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>. Here's what needs your attention.</p>
             </div>
-            <a href="../../html/home.php" style="font-size:13px;color:var(--text-muted);text-decoration:none;">← Back to Site</a>
+            <a href="../../html/home.php"
+               style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+                      color:var(--text-muted);text-decoration:none;padding:8px 18px;
+                      border:1.5px solid var(--border);border-radius:999px;background:white;
+                      box-shadow:var(--shadow-sm);transition:.15s;"
+               onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'"
+               onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+               👁 View Site
+            </a>
         </div>
 
         <!-- ADMIN PROFILE CARD -->

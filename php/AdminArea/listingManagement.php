@@ -93,8 +93,7 @@ tr:hover td { background:#fafafa; }
 <div class="admin-wrap">
     <div class="page-header">
         <h1>📋 Listing Management</h1>
-        <a href="../../html/home.php" style="font-size:13px;color:var(--text-muted);text-decoration:none;">← Back to Site</a>
-    </div>
+          </div>
 
     <?php if ($msg): ?><div class="alert-success">✔ <?= htmlspecialchars($msg) ?></div><?php endif; ?>
     <?php if ($err): ?><div class="alert-error">⚠ <?= htmlspecialchars($err) ?></div><?php endif; ?>

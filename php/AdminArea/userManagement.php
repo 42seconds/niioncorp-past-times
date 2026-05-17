@@ -155,8 +155,7 @@ $conn->close();
     <div class="admin-wrap">
         <div class="admin-header">
             <h1>User Management</h1>
-            <a href="../../html/home.php" style="font-size:13px;color:var(--text-muted);text-decoration:none;">← Back to Site</a>
-        </div>
+               </div>
         <?php if (isset($_GET['msg'])): ?><div class="alert alert-success"><?= htmlspecialchars($_GET['msg']) ?></div><?php endif; ?>
         <?php if (isset($_GET['err'])): ?><div class="alert alert-error"><?= htmlspecialchars($_GET['err']) ?></div><?php endif; ?>
         <table>

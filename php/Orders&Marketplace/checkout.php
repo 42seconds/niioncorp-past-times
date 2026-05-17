@@ -25,8 +25,12 @@ $stmt->close();
 
 if (!$listing) { header('Location: ../../html/home.php'); exit; }
 
-// Block seller buying own item
-if ((int)$_SESSION['userID'] === (int)$listing['sellerUID']) {
+// Block seller from buying anything (own item OR another seller's item)
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller') {
+    header('Location: ../../html/product-detail.php?id=' . $listingID . '&err=seller_cannot_buy'); exit;
+}
+// Block admin from buying
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     header('Location: ../../html/product-detail.php?id=' . $listingID); exit;
 }
 
@@ -264,4 +268,3 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
 <script src="../../javascript/script.js"></script>
 </body>
 </html>
- 
