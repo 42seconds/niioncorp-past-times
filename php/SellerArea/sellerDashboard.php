@@ -117,7 +117,7 @@ if (isset($_GET['msg'])) {
     <title>Seller Dashboard – Past Times</title>
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         .sb {
@@ -592,8 +592,9 @@ if (isset($_GET['msg'])) {
                                 <div style="font-size:12px;color:var(--text-muted);"><?= htmlspecialchars($l['category']) ?> · R <?= number_format($l['price'], 2) ?></div>
                             </div>
                             <span class="sb" style="background:<?= $bg ?>;color:<?= $c ?>;border:1px solid <?= $b ?>;"><?= strtoupper($l['status']) ?></span>
+                            <a href="editListing.php?id=<?= $l['listingID'] ?>" style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none;margin-left:8px;">✏ Edit</a>
                             <?php if ($l['status'] === 'approved'): ?>
-                                <a href="../../html/product-detail.php?id=<?= $l['listingID'] ?>" style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none;margin-left:8px;">View →</a>
+                                <a href="../../html/product-detail.php?id=<?= $l['listingID'] ?>" style="font-size:12px;color:#1a5c35;font-weight:600;text-decoration:none;margin-left:6px;">View →</a>
                             <?php endif; ?>
                         </div>
                     <?php endwhile;

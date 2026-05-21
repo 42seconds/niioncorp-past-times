@@ -57,16 +57,20 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
   <div class="navbar-nav">
     <a class="nav-link" href="home.php">Explore</a>
     <a class="nav-link" href="about.php">About</a>
-    <?php if ($loggedIn): ?>
+    <?php if ($loggedIn && !$isSeller && !$isAdmin): ?>
       <a class="nav-link" href="favorites.php">Favourites</a>
     <?php endif; ?>
     <a class="nav-link" href="contactUs.php">Contact</a>
   </div>
   <div class="navbar-actions">
-    <?php if ($loggedIn): ?>
-      <div class="icon-btn" onclick="location.href='favorites.php'">🛒</div>
+    <?php if ($loggedIn):
+        $dashUrl = $isAdmin ? '../php/AdminArea/adminDashboard.php' : ($isSeller ? '../php/SellerArea/sellerDashboard.php' : 'dashboard.php');
+      ?>
+      <?php if (!$isSeller && !$isAdmin): ?>
+      <div class="icon-btn" onclick="location.href='cart.php'" title="Cart">🛒</div>
       <div class="icon-btn">🔔</div>
-      <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
+      <?php endif; ?>
+      <div class="avatar-btn" onclick="location.href='<?= $dashUrl ?>'" title="Dashboard"><?= $initials ?></div>
     <?php else: ?>
       <a href="../php/AuthSystem/login.php" class="btn btn-secondary btn-sm" style="margin-right:8px;">Log In</a>
       <a href="../php/AuthSystem/register.php" class="btn btn-primary btn-sm">Sign Up</a>
@@ -105,7 +109,7 @@ $sellerInitials= strtoupper(substr($p['firstName'],0,1).substr($p['lastName'],0,
       <div class="seller-avatar"><?= $sellerInitials ?></div>
       <div style="flex:1;">
         <div class="seller-name">@<?= htmlspecialchars($p['username']) ?></div>
-        <div class="seller-stats">Trusted Seller</div>
+        <div class="seller-stats">★★★★★ Trusted Seller</div>
         <div class="seller-response">View full profile →</div>
       </div>
      

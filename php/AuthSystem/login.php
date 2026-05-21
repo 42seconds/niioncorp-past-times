@@ -1,4 +1,3 @@
-
 <?php
 
 session_start();
@@ -78,7 +77,7 @@ $conn->close();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
-      <link rel="stylesheet" href="../css/responsive.css">
+      <link rel="stylesheet" href="../../css/responsive.css">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>

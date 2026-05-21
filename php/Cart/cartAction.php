@@ -1,4 +1,3 @@
-Copy
 
 <?php
 session_start();

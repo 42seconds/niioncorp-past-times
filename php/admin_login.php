@@ -2,12 +2,13 @@
 session_start();
 
    if (isset($_GET['logout'])) {
+        session_unset();
         session_destroy();
-        header('Location: ../php/AdminSystem/admin_login.php');
+        header('Location: admin_login.php');
         exit;
     }
     
-include('../php/BackendLogic/dbConn.php');
+include('BackendLogic/dbConn.php');
 
  
  
