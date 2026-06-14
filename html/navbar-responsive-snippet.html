@@ -1,30 +1,13 @@
-<!--
-  ════════════════════════════════════════════════════════════════
-  HOW TO MAKE THE NAVBAR RESPONSIVE  –  Past Times
-  ════════════════════════════════════════════════════════════════
-
-  STEP 1: Add responsive.css to EVERY html/php file's <head>,
-          AFTER styles.css:
-
-      <link rel="stylesheet" href="../css/styles.css">
-      <link rel="stylesheet" href="../css/responsive.css">   ← ADD THIS
-
-  STEP 2: Replace the existing <nav class="navbar"> block in
-          every page with the version below.
-          The ONLY addition is the hamburger <button> — the rest
-          is your original markup, untouched.
-  ════════════════════════════════════════════════════════════════
--->
 
 <nav class="navbar">
 
-  <!-- Brand (unchanged) -->
+  <!-- Top  -->
   <div class="navbar-brand" onclick="location.href='home.php'">
     <div class="logo-icon">P</div>
     <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
   </div>
 
-  <!-- ★ NEW: hamburger button — visible only on mobile via CSS -->
+  <!-- hamburger button — visible only on mobile via CSS -->
   <button class="navbar-toggle" aria-label="Toggle menu" aria-expanded="false"
           onclick="
             var nav = this.parentElement.querySelector('.navbar-nav');
@@ -52,12 +35,3 @@
   </div>
 
 </nav>
-
-<!--
-  STEP 3: That's it. responsive.css handles everything else:
-    • .navbar-toggle is hidden on desktop (display:none in styles.css default)
-    • On ≤768px it shows as a ☰ button
-    • Clicking it adds/removes class "open" on .navbar-nav
-    • .navbar-nav.open { display: flex } reveals the dropdown
-    • All grid/flex layouts stack correctly at 768px and 480px
--->

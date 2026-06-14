@@ -2,7 +2,6 @@
 /**
  * DBConn.php
  * Past Times – Database Connection File
- * Establishes a MySQLi connection to the past_times database.
  */
 
 define('DB_HOST', 'localhost');

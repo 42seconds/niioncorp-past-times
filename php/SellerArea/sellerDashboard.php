@@ -9,7 +9,7 @@ require_once '../BackendLogic/dbConn.php';
 $sellerID = (int)$_SESSION['userID'];
 $initials = strtoupper(substr($_SESSION['firstName'], 0, 1) . substr($_SESSION['lastName'], 0, 1));
 
-// ── Handle order status updates ───────────────────────────────────────────────
+// Handle order status updates 
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['orderID'])) {
     $orderID = (int)$_POST['orderID'];
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
         }
     }
 }
-// ── Listing stats ─────────────────────────────────────────────────────────────
+//  Listing stats 
 $listingStats = ['total' => 0, 'pending' => 0, 'approved' => 0, 'rejected' => 0];
 $res = $conn->query("SELECT status, COUNT(*) c FROM tblListings WHERE sellerID=$sellerID GROUP BY status");
 while ($r = $res->fetch_assoc()) {
@@ -50,7 +50,7 @@ while ($r = $res->fetch_assoc()) {
 }
 
 
-// ── Order stats ───────────────────────────────────────────────────────────────
+// Order stats 
 $orderStats = ['total' => 0, 'pending' => 0, 'paid' => 0, 'shipped' => 0, 'delivered' => 0];
 $res2 = $conn->query("SELECT status, COUNT(*) c FROM tblOrders WHERE sellerID=$sellerID GROUP BY status");
 while ($r = $res2->fetch_assoc()) {
@@ -58,11 +58,11 @@ while ($r = $res2->fetch_assoc()) {
     $orderStats['total'] += (int)$r['c'];
 }
 
-// ── Earnings (delivered orders only — escrow released) ───────────────────────
+// Earnings 
 $earnRow = $conn->query("SELECT COALESCE(SUM(totalPrice),0) e FROM tblOrders WHERE sellerID=$sellerID AND status='delivered'")->fetch_assoc();
 $earnings = (float)$earnRow['e'];
 
-// ── Incoming orders (newest first, grouped by status tab) ────────────────────
+// Incoming orders 
 $orderFilter = $_GET['tab'] ?? 'paid'; // default to orders needing action
 $validTabs   = ['paid', 'pending', 'shipped', 'delivered', 'cancelled'];
 if (!in_array($orderFilter, $validTabs)) $orderFilter = 'paid';
@@ -82,7 +82,7 @@ $ordersStmt->execute();
 $orders = $ordersStmt->get_result();
 $ordersStmt->close();
 
-// ── Recent listings (last 4) ──────────────────────────────────────────────────
+// Recent listings 
 $listStmt = $conn->prepare("SELECT listingID, title, category, price, status, imagePath FROM tblListings WHERE sellerID=? ORDER BY createdAt DESC LIMIT 4");
 $listStmt->bind_param("i", $sellerID);
 $listStmt->execute();
@@ -336,7 +336,7 @@ if (isset($_GET['msg'])) {
 </head>
 
 <body>
-    <!-- HAMBURGER (mobile) -->
+    <!-- HAMBURGER -->
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <div class="dashboard-layout">
@@ -443,7 +443,7 @@ if (isset($_GET['msg'])) {
                         <div class="order-card">
 
 
-                            <!-- HEADER: order ID + status + buyer -->
+                            <!-- HEADER: -->
                             <div class="order-card-header">
                                 <div>
                                     <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Order #<?= $o['orderID'] ?></div>
@@ -469,7 +469,7 @@ if (isset($_GET['msg'])) {
 
                                 <div class="order-thumb">
                                     <?php if (!empty($o['imagePath'])): ?>
-                                        <img src="../../<?= htmlspecialchars($o['imagePath']) ?>" alt=""><!-- ✅ IMAGE: ../../php/uploads/listings/file -->
+                                        <img src="../../<?= htmlspecialchars($o['imagePath']) ?>" alt="">
                                     <?php endif; ?>
                                 </div>
                                 <div style="flex:1;">
@@ -507,12 +507,12 @@ if (isset($_GET['msg'])) {
                                     </div>
 
                                 <?php elseif ($o['status'] === 'pending'): ?>
-                                    <!-- Awaiting payment — just show info -->
+                                    <!-- Awaiting payment — just to show the info -->
                                     <div style="font-size:13px;color:var(--text-muted);">Awaiting payment from buyer.</div>
                                     <a href="messages.php?to=<?= $o['buyerID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a>
 
                                 <?php elseif ($o['status'] === 'shipped'): ?>
-                                    <!-- Already shipped — awaiting buyer confirmation -->
+                                    <!-- Already shipped — awaiting the buyers confirmation -->
                                     <div style="font-size:13px;color:#1a5c35;font-weight:600;">Item shipped. Waiting for buyer to confirm delivery.</div>
                                     <div style="font-size:12px;color:var(--text-muted);">Delivery: <?= nl2br(htmlspecialchars($o['deliveryAddress'])) ?></div>
 
@@ -525,7 +525,7 @@ if (isset($_GET['msg'])) {
                                 <?php endif; ?>
                             </div>
 
-                            <!-- SHIP FORM — shown when order is accepted (status = paid → after accept it becomes paid, use separate tab) -->
+                            <!-- SHIPPING FORM -->
                             <?php if ($o['status'] === 'paid'): ?>
                                 <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);">
                                     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--primary);margin-bottom:8px;">✔ ACCEPT ORDER & ENTER TRACKING TO SHIP</div>
@@ -584,7 +584,7 @@ if (isset($_GET['msg'])) {
                         <div class="listing-mini">
                             <div class="listing-mini-thumb">
                                 <?php if (!empty($l['imagePath'])): ?>
-                                    <img src="../../<?= htmlspecialchars($l['imagePath']) ?>" alt=""><!-- ✅ IMAGE: ../../php/uploads/listings/file -->
+                                    <img src="../../<?= htmlspecialchars($l['imagePath']) ?>" alt="">
                                     <?php else: ?><?= $listingEmoji($l['category']) ?><?php endif; ?>
                             </div>
                             <div style="flex:1;">
@@ -607,7 +607,7 @@ if (isset($_GET['msg'])) {
 
         </div>
     </div>
-    <script src="../../javascript/script.js"></script><!-- ✓ php/SellerArea → root/javascript -->
+    <script src="../../javascript/script.js"></script>
     <script>
         function toggleSidebar() {
             document.querySelector(".sidebar").classList.toggle("open");

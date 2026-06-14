@@ -323,7 +323,7 @@ img, video {
 }
 
 
-/* ── DASHBOARD ───────────────────────────────────────────────── */
+/* DASHBOARD */
 @media (max-width: 768px) {
   /* Dashboard typically uses a sidebar + main grid */
   .dashboard-layout,
@@ -357,7 +357,7 @@ img, video {
 }
 
 
-/* ── FORMS (login, register, settings) ───────────────────────── */
+/* FORMS (login, register, settings)  */
 @media (max-width: 480px) {
   .container {
     margin: 20px 12px;
@@ -376,7 +376,7 @@ img, video {
 }
 
 
-/* ── ADMIN PORTAL ────────────────────────────────────────────── */
+/*  ADMIN PORTAL */
 @media (max-width: 768px) {
   .admin-link {
     font-size: 13px;
@@ -390,7 +390,7 @@ img, video {
 }
 
 
-/* ── MESSAGES PAGE ───────────────────────────────────────────── */
+/*  MESSAGES PAGE */
 @media (max-width: 768px) {
   /* Chat layout: sidebar + chat panel → stacked */
   div[class*="messages"],
@@ -411,7 +411,7 @@ img, video {
 }
 
 
-/* ── CONDITION / SHIPPING ROWS ───────────────────────────────── */
+/*  CONDITION / SHIPPING ROWS */
 @media (max-width: 640px) {
   .condition-row {
     flex-direction: column;
@@ -428,7 +428,7 @@ img, video {
 }
 
 
-/* ── GENERAL SPACING RESETS on small screens ─────────────────── */
+/* GENERAL SPACING RESETS on small screens  */
 @media (max-width: 480px) {
   h1 { font-size: clamp(20px, 5vw, 28px); }
   h2 { font-size: clamp(17px, 4vw, 22px); }
@@ -449,17 +449,3 @@ img, video {
   }
 }
 
-
-/* ── Hamburger toggle script hook (no extra JS file needed) ───── */
-/* The toggle is activated by adding class "open" to .navbar-nav   */
-/* via the inline script below — paste this into your navbar HTML: */
-
-/*
-  <button class="navbar-toggle" aria-label="Menu" onclick="
-    this.nextElementSibling.classList.toggle('open');
-  ">
-    <span></span><span></span><span></span>
-  </button>
-
-  Place the button BEFORE .navbar-nav inside .navbar.
-*/

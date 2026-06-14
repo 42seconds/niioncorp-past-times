@@ -9,7 +9,7 @@ echo "<pre style='font-family:monospace;font-size:14px;'>";
 echo "Past Times — Table Setup\n";
 echo "========================\n\n";
 
-// ── OPTIONAL HARD RESET (both params required) ────────────────────────────────
+// OPTIONAL HARD RESET (both params required) 
 if ($reset) {
     echo "⚠  RESET requested — dropping existing tables...\n";
     $conn->query("DROP TABLE IF EXISTS tblOrderItems");
@@ -19,7 +19,7 @@ if ($reset) {
     echo "✔  All tables dropped.\n\n";
 }
 
-// ── tblUser ───────────────────────────────────────────────────────────────────
+//  tblUser 
 $conn->query("
 CREATE TABLE IF NOT EXISTS tblUser (
     userID       INT          NOT NULL AUTO_INCREMENT,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS tblUser (
 ") or die("✘ tblUser failed: " . $conn->error . "\n");
 echo "✔  tblUser — ready.\n";
 
-// ── tblListings ───────────────────────────────────────────────────────────────
+// tblListings 
 $conn->query("
 CREATE TABLE IF NOT EXISTS tblListings (
     listingID   INT            NOT NULL AUTO_INCREMENT,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS tblListings (
 ") or die("✘ tblListings failed: " . $conn->error . "\n");
 echo "✔  tblListings — ready.\n";
 
-// ── tblOrders ─────────────────────────────────────────────────────────────────
+// tblOrders 
 $conn->query("
 CREATE TABLE IF NOT EXISTS tblOrders (
     orderID       INT            NOT NULL AUTO_INCREMENT,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS tblOrders (
 ") or die("✘ tblOrders failed: " . $conn->error . "\n");
 echo "✔  tblOrders — ready.\n";
 
-// ── tblOrderItems (future bundled orders) ─────────────────────────────────────
+//  tblOrderItems (future bundled orders) 
 $conn->query("
 CREATE TABLE IF NOT EXISTS tblOrderItems (
     itemID      INT           NOT NULL AUTO_INCREMENT,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS tblOrderItems (
 echo "✔  tblOrderItems — ready.\n\n";
 
 
-// ── tblFavourites ─────────────────────────────────────────────────────────────
+//  tblFavourites 
 $conn->query("
 CREATE TABLE IF NOT EXISTS tblFavourites (
     favID       INT      NOT NULL AUTO_INCREMENT ,
@@ -113,7 +113,7 @@ echo "✔  tblFavourites — ready.\n\n";
 
 
 
-// ── SEED tblUser only if empty ────────────────────────────────────────────────
+// SEED tblUser only if empty 
 $count = $conn->query("SELECT COUNT(*) c FROM tblUser")->fetch_assoc()['c'];
 
 if ($count > 0) {

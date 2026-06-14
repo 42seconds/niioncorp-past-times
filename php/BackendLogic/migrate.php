@@ -1,8 +1,5 @@
 <?php
-/**
- * migrate.php — run once to add tblMessages and tblCart
- * Access via: http://localhost/php/BackendLogic/migrate.php
- */
+
 include 'dbConn.php';
 echo "<pre style='font-family:monospace;font-size:14px;'>";
 echo "Past Times — Migration\n======================\n\n";

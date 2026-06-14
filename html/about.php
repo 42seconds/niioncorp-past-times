@@ -51,7 +51,7 @@ $initials = $loggedIn
             <?php if ($loggedIn): ?>
 
                 <div class="icon-btn" onclick="location.href='favorites.php'">🛒</div>
-                <div class="icon-btn">🔔</div>
+              
                 <div class="avatar-btn" onclick="location.href='dashboard.php'" title="My Dashboard"><?= $initials ?></div>
 
 

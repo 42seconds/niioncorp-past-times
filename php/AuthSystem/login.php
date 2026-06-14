@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($row['status'] === 'pending') {
             $error = "Your account is pending admin verification. Please check back later.";
         } else {
-            // ── SUCCESS: store session then redirect ───────────────────────
+            //  SUCCESS: store session then redirect 
             $_SESSION['userID']    = $row['userID'];
             $_SESSION['username']  = $row['username'];
             $_SESSION['firstName'] = $row['firstName'];
@@ -109,7 +109,7 @@ $conn->close();
 <div class="container">
 
   <?php if ($userData): ?>
-    <!-- ── SUCCESS STATE ── -->
+    <!-- SUCCESS STATE -->
     <div class="user-banner">
       User <?= htmlspecialchars($userData['firstName'] . ' ' . $userData['lastName']) ?> is logged in
     </div>
@@ -130,7 +130,7 @@ $conn->close();
     </div>
 
   <?php else: ?>
-    <!-- ── LOGIN FORM ── -->
+    <!--  LOGIN FORM -->
     <h1>Welcome Back</h1>
     <div class="subtitle">Sign in to manage your curated finds.</div>
 

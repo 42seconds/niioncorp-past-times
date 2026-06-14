@@ -1,4 +1,4 @@
-/* ── Hamburger toggle button (hidden on desktop) ── */
+/*  Hamburger toggle button (hidden on desktop)  */
 .sidebar-toggle {
     display: none;
     position: fixed;
@@ -18,7 +18,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* ── Sidebar overlay (mobile) ── */
+/*  Sidebar overlay (mobile) */
 .sidebar-overlay {
     display: none;
     position: fixed;

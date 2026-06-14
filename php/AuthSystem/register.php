@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $ins->bind_param("ssssss", $sUsername, $sFirst, $sLast, $sEmail, $hash, $role);
                         
             if ($ins->execute()) {
-                // ── Redirect to login with a success flag ──────────────────
+                //  Redirect to login with a success flag 
                 $ins->close();
                 $chk->close();
                 $conn->close();

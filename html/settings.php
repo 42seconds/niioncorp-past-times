@@ -265,7 +265,6 @@ $conn->close();
 
                 <?php else: ?>
                     <a class="nav-link" href="home.php">Explore</a>
-                    <a class="nav-link" href="favourites.php">Favourites</a>
                 <?php endif; ?>
             </div>
 

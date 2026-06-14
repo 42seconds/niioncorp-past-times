@@ -1,33 +1,65 @@
 <?php
 session_start();
-if (!isset($_SESSION['userID'])) {
-    header('Location: ../php/AuthSystem/login.php');
-    exit;
-}
+
+// Check if user is logged in, if not, redirect to login (but we'll show guest cart first)
+$loggedIn = isset($_SESSION['userID']);
+$userID = $loggedIn ? (int)$_SESSION['userID'] : 0;
+$initials = '';
+
 require_once '../php/BackendLogic/dbConn.php';
 
-$userID   = (int)$_SESSION['userID'];
-$initials = strtoupper(substr($_SESSION['firstName'], 0, 1) . substr($_SESSION['lastName'], 0, 1));
+// MIGRATE GUEST CART TO DATABASE WHEN USER LOGS IN
+if ($loggedIn && isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
+    foreach ($_SESSION['guest_cart'] as $listingID) {
+        $ins = $conn->prepare("INSERT IGNORE INTO tblCart (userID, listingID) VALUES (?, ?)");
+        $ins->bind_param("ii", $userID, $listingID);
+        $ins->execute();
+        $ins->close();
+    }
+    unset($_SESSION['guest_cart']);
+}
 
-// Fetch cart items with listing details
-$stmt = $conn->prepare("
-    SELECT c.cartID, c.listingID, c.note, c.addedAt,
-           l.title, l.category, l.condition_, l.price, l.imagePath, l.delivery, l.status,
-           u.username AS sellerName, u.userID AS sellerUID
-    FROM tblCart c
-    JOIN tblListings l ON c.listingID = l.listingID
-    JOIN tblUser u     ON l.sellerID  = u.userID
-    WHERE c.userID = ?
-    ORDER BY c.addedAt DESC
-");
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+if ($loggedIn) {
+    $initials = strtoupper(substr($_SESSION['firstName'] ?? '', 0, 1) . substr($_SESSION['lastName'] ?? '', 0, 1));
+
+    // Fetch cart items with listing details
+    $stmt = $conn->prepare("
+        SELECT c.cartID, c.listingID, c.note, c.addedAt,
+               l.title, l.category, l.condition_, l.price, l.imagePath, l.delivery, l.status,
+               u.username AS sellerName, u.userID AS sellerUID
+        FROM tblCart c
+        JOIN tblListings l ON c.listingID = l.listingID
+        JOIN tblUser u     ON l.sellerID  = u.userID
+        WHERE c.userID = ?
+        ORDER BY c.addedAt DESC
+    ");
+    $stmt->bind_param("i", $userID);
+    $stmt->execute();
+    $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+} else {
+    // Guest cart from session
+    $items = [];
+    if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
+        $placeholders = implode(',', array_fill(0, count($_SESSION['guest_cart']), '?'));
+        $stmt = $conn->prepare("
+            SELECT l.listingID, l.title, l.category, l.condition_, l.price, l.imagePath, l.delivery, l.status,
+                   u.username AS sellerName, u.userID AS sellerUID
+            FROM tblListings l
+            JOIN tblUser u ON l.sellerID = u.userID
+            WHERE l.listingID IN ($placeholders) AND l.status = 'approved'
+        ");
+        $stmt->bind_param(str_repeat('i', count($_SESSION['guest_cart'])), ...$_SESSION['guest_cart']);
+        $stmt->execute();
+        $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+    }
+}
 
 $total = array_sum(array_column($items, 'price'));
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -199,6 +231,71 @@ $conn->close();
             padding: 60px 20px;
             color: var(--text-muted);
         }
+
+        .cart-icon-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #C0392B;
+            color: white;
+            border-radius: 999px;
+            font-size: 9px;
+            padding: 1px 5px;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 6px;
+            background: none;
+            border: none;
+        }
+
+        .navbar-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #1A1A1A;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-toggle {
+                display: flex;
+            }
+
+            .navbar-nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: #fff;
+                border-top: 1px solid #E8E2DA;
+                order: 3;
+            }
+
+            .navbar-nav.open {
+                display: flex;
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+                padding: 10px 16px;
+            }
+
+            .navbar-brand {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 
@@ -209,20 +306,26 @@ $conn->close();
             <div class="logo-icon">P</div>
             <span style="font-family:var(--font-display);font-size:16px;font-weight:700;">Past Times</span>
         </div>
+        <button class="navbar-toggle" aria-label="Toggle menu" aria-expanded="false" onclick="this.parentElement.querySelector('.navbar-nav').classList.toggle('open'); this.setAttribute('aria-expanded', this.parentElement.querySelector('.navbar-nav').classList.contains('open'));">
+            <span></span><span></span><span></span>
+        </button>
         <div class="navbar-nav">
             <a class="nav-link" href="home.php">Explore</a>
             <a class="nav-link" href="favorites.php">Favourites</a>
             <a class="nav-link active" href="cart.php">Cart</a>
         </div>
         <div class="navbar-actions">
-            <div class="icon-btn" onclick="location.href='cart.php'" title="Cart" style="position:relative;">
-                🛒
-                <?php if (!empty($items)): ?>
-                    <span id="cartBadge" style="position:absolute;top:-4px;right:-4px;background:var(--primary);color:white;border-radius:999px;font-size:9px;padding:1px 5px;font-weight:700;"><?= count($items) ?></span>
-                <?php endif; ?>
+            <div class="cart-icon-wrapper" onclick="location.href='cart.php'" title="Cart">
+                <div class="icon-btn">🛒</div>
+                <span id="cartBadge" class="cart-badge" style="display: <?= count($items) > 0 ? 'inline-block' : 'none' ?>;"><?= count($items) ?></span>
             </div>
             <div class="icon-btn">🔔</div>
-            <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
+            <?php if ($loggedIn): ?>
+                <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
+            <?php else: ?>
+                <a href="../php/AuthSystem/login.php" class="btn btn-secondary btn-sm" style="margin-right:8px;">Log In</a>
+                <a href="../php/AuthSystem/register.php" class="btn btn-primary btn-sm">Sign Up</a>
+            <?php endif; ?>
         </div>
     </nav>
 
@@ -233,8 +336,6 @@ $conn->close();
     </div>
 
     <div class="cart-layout">
-
-        <!-- LEFT: ITEMS -->
         <div class="cart-card">
             <div class="cart-title">My Cart <span style="font-size:16px;color:var(--text-muted);font-family:var(--font-body);font-weight:400;">(<?= count($items) ?> item<?= count($items) !== 1 ? 's' : '' ?>)</span></div>
 
@@ -251,15 +352,11 @@ $conn->close();
                     };
             ?>
                     <div class="cart-item" id="cartItem<?= $item['listingID'] ?>" <?= $unavailable ? 'style="opacity:.6;"' : '' ?>>
-
-                        <!-- Thumbnail -->
                         <div class="item-thumb">
                             <?php if (!empty($item['imagePath'])): ?>
                                 <img src="../<?= htmlspecialchars($item['imagePath']) ?>" alt="">
                                 <?php else: ?><?= $emoji ?><?php endif; ?>
                         </div>
-
-                        <!-- Info -->
                         <div>
                             <div class="item-title">
                                 <a href="product-detail.php?id=<?= $item['listingID'] ?>" style="color:inherit;text-decoration:none;">
@@ -268,17 +365,11 @@ $conn->close();
                                 <?php if ($unavailable): ?><span class="badge-unavailable">UNAVAILABLE</span><?php endif; ?>
                             </div>
                             <div class="item-meta"><?= htmlspecialchars($item['category']) ?> · <?= htmlspecialchars($item['condition_']) ?> · @<?= htmlspecialchars($item['sellerName']) ?></div>
-                            <div class="item-meta" style="margin-top:2px;">Added <?= date('d M Y', strtotime($item['addedAt'])) ?></div>
-
-                            <!-- Note / instructions -->
                             <div class="item-note">
-                                <textarea id="note<?= $item['listingID'] ?>" rows="2"
-                                    placeholder="Add a note for the seller (optional)…"><?= htmlspecialchars($item['note'] ?? '') ?></textarea>
+                                <textarea id="note<?= $item['listingID'] ?>" rows="2" placeholder="Add a note for the seller (optional)…"><?= htmlspecialchars($item['note'] ?? '') ?></textarea>
                                 <button class="save-note-btn" onclick="saveNote(<?= $item['listingID'] ?>)">💾 Save note</button>
                             </div>
                         </div>
-
-                        <!-- Price + remove -->
                         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
                             <div class="item-price">R <?= number_format($item['price'], 2) ?></div>
                             <button class="remove-btn" onclick="removeItem(<?= $item['listingID'] ?>)" title="Remove">🗑</button>
@@ -299,7 +390,6 @@ $conn->close();
             <?php endif; ?>
         </div>
 
-        <!-- RIGHT: SUMMARY -->
         <?php if (!empty($items)): ?>
             <div>
                 <div class="cart-card">
@@ -314,16 +404,17 @@ $conn->close();
                     <div class="summary-row" style="margin-top:8px;"><span>Platform fee</span><span style="color:#1a5c35;">Free 🌿</span></div>
                     <div class="summary-row" style="margin-top:4px;"><span>Total</span><span>R&nbsp;<?= number_format(array_sum(array_column(array_values($available), 'price')), 2) ?></span></div>
 
-                    <?php if (count($available) === 1): ?>
+                    <?php if (!$loggedIn): ?>
+                        <div style="margin-top:16px;background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:12px;font-size:13px;color:#7a4f00;text-align:center;">
+                            🔐 <a href="../php/AuthSystem/register.php" style="color:var(--primary);font-weight:600;">Sign up</a> or
+                            <a href="../php/AuthSystem/login.php" style="color:var(--primary);font-weight:600;">log in</a> to complete checkout
+                        </div>
+                    <?php elseif (count($available) === 1): ?>
                         <a href="../php/Orders&Marketplace/checkout.php?id=<?= $available[array_key_first($available)]['listingID'] ?>"
                             class="btn btn-primary" style="width:100%;margin-top:16px;text-align:center;">Checkout →</a>
                     <?php elseif (count($available) > 1): ?>
                         <div style="margin-top:16px;background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:12px;font-size:13px;color:#7a4f00;">
                             ⚠ Each item is purchased separately. Click <strong>Buy Now</strong> on each item above to checkout individually.
-                        </div>
-                    <?php else: ?>
-                        <div style="margin-top:16px;background:#fce8e8;border:1px solid #f5b7b7;border-radius:8px;padding:12px;font-size:13px;color:#8b1a14;">
-                            ⚠ No available items in your cart.
                         </div>
                     <?php endif; ?>
 
@@ -333,13 +424,11 @@ $conn->close();
                         🌿 Zero platform fees
                     </div>
                 </div>
-
                 <div style="margin-top:12px;">
-                    <a href="home.php" class="btn btn-primary" style="background: #076c44;" >← Continue Shopping</a>
+                    <a href="home.php" class="btn btn-primary" style="background: #076c44;">← Continue Shopping</a>
                 </div>
             </div>
         <?php endif; ?>
-
     </div>
 
     <script>
@@ -353,12 +442,24 @@ $conn->close();
                     body: fd
                 })
                 .then(r => r.json()).then(data => {
-                    if (data.action === 'removed') {
+                    if (data.action === 'removed' || data.action === 'guest_removed') {
                         const el = document.getElementById('cartItem' + listingID);
                         if (el) {
                             el.style.transition = 'opacity .3s';
                             el.style.opacity = '0';
                             setTimeout(() => location.reload(), 300);
+                        }
+                        if (data.cartCount !== undefined || data.guestCount !== undefined) {
+                            const badge = document.getElementById('cartBadge');
+                            const count = data.cartCount || data.guestCount || 0;
+                            if (badge) {
+                                if (count > 0) {
+                                    badge.textContent = count;
+                                    badge.style.display = 'inline-block';
+                                } else {
+                                    badge.style.display = 'none';
+                                }
+                            }
                         }
                     }
                 });

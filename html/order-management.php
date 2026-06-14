@@ -9,7 +9,7 @@ require_once '../php/BackendLogic/dbConn.php';
 $sellerID = (int)$_SESSION['userID'];
 $initials = strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['lastName'],0,1));
 
-// ── Handle POST actions ───────────────────────────────────────────────────────
+//  Handle POST actions 
 $msg = isset($_GET['msg']) ? 'success:'.urldecode($_GET['msg']) : '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['orderID'])) {
     $orderID = (int)$_POST['orderID'];
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['ord
     }
 }
 
-// ── Fetch all orders for this seller ─────────────────────────────────────────
+//  Fetch all orders for this seller 
 $statusFilter = $_GET['status'] ?? 'all';
 $validStatus  = ['all','pending','paid','shipped','delivered','cancelled'];
 if (!in_array($statusFilter, $validStatus)) $statusFilter = 'all';
@@ -55,7 +55,7 @@ $orders = $conn->query("
     ORDER BY FIELD(o.status,'paid','pending','shipped','delivered','cancelled'), o.createdAt DESC
 ");
 
-// ── Counts per status ─────────────────────────────────────────────────────────
+//  Counts per status 
 $counts = ['all'=>0,'pending'=>0,'paid'=>0,'shipped'=>0,'delivered'=>0,'cancelled'=>0];
 $cRes = $conn->query("SELECT status, COUNT(*) c FROM tblOrders WHERE sellerID=$sellerID GROUP BY status");
 while ($r = $cRes->fetch_assoc()) {
@@ -211,7 +211,7 @@ $statusColour = [
               style="background:#fce8e8;color:#8b1a14;border:1px solid #f5b7b7;"
               onclick="return confirm('Decline order #<?= $o['orderID'] ?>?')">✕ Decline</button>
           </form>
-          <!--- <a href="messages.php?buyer=<?= $o['buyerUID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a> -->
+          <!--- <a href="messages.php? buyer= <?= $o['buyerUID'] ?? 0 ?>" class="btn btn-secondary btn-sm">💬 Message Buyer</a> -->
         </div>
 
       <?php elseif ($o['status'] === 'pending'): ?>

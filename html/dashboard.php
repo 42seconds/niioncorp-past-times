@@ -74,7 +74,7 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
     <link rel="stylesheet" href="../css/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ── Status badges ── */
+        /* Status badges */
         .sb {
             display: inline-block;
             padding: 3px 10px;
@@ -84,7 +84,7 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
             letter-spacing: .04em;
         }
 
-        /* ── Section card ── */
+        /*  Section card  */
         .sec {
             background: white;
             border-radius: var(--radius-lg);
@@ -108,7 +108,7 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
             margin: 0;
         }
 
-        /* ── Order card ── */
+        /*  Order card  */
         .order-row {
             display: grid;
             grid-template-columns: 52px 1fr auto;
@@ -149,7 +149,7 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
             object-fit: cover;
         }
 
-        /* ── Mini timeline inside each order row ── */
+        /* Mini timeline inside each order row  */
         .mini-timeline {
             display: flex;
             align-items: center;
@@ -204,7 +204,7 @@ $statusOrder = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunde
             white-space: nowrap;
         }
 
-        /* ── Empty state ── */
+        /* Empty state  */
         .empty {
             text-align: center;
             padding: 48px 20px;
