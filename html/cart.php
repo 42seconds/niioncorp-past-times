@@ -319,7 +319,7 @@ $conn->close();
                 <div class="icon-btn">🛒</div>
                 <span id="cartBadge" class="cart-badge" style="display: <?= count($items) > 0 ? 'inline-block' : 'none' ?>;"><?= count($items) ?></span>
             </div>
-            <div class="icon-btn">🔔</div>
+
             <?php if ($loggedIn): ?>
                 <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
             <?php else: ?>

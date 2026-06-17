@@ -163,7 +163,7 @@ body{background:var(--cream);font-family:var(--font-body);}
   </div>
   <div class="navbar-actions">
     <div class="icon-btn" onclick="location.href='cart.php'" title="Cart">🛒</div>
-    <div class="icon-btn">🔔</div>
+  
     <div class="avatar-btn" onclick="location.href='dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>

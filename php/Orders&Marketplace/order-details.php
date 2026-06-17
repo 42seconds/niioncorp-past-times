@@ -119,7 +119,7 @@ $currentIdx  = array_search($order['status'], $statusOrder);
     <a class="nav-link" href="orders.php">My Orders</a>
   </div>
   <div class="navbar-actions">
-    <div class="icon-btn">🔔</div>
+   
     <div class="avatar-btn" onclick="location.href='../../html/dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>

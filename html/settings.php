@@ -264,6 +264,8 @@ $conn->close();
                     <a class="nav-link" href="../php/SellerArea/create-listing.php">Sell</a>
 
                 <?php else: ?>
+                    
+                    <a class="nav-link" href="../html/dashboard.php">My Dashboard</a>
                     <a class="nav-link" href="home.php">Explore</a>
                 <?php endif; ?>
             </div>

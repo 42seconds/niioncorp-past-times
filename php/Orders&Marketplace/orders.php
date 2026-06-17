@@ -80,7 +80,7 @@ $statusColour = [
     <a class="nav-link active">My Orders</a>
   </div>
   <div class="navbar-actions">
-    <div class="icon-btn">🔔</div>
+    
     <div class="avatar-btn" onclick="location.href='../../html/dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>

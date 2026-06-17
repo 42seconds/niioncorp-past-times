@@ -115,7 +115,7 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
     <a class="nav-link" href="../../html/favorites.php">Favourites</a>
   </div>
   <div class="navbar-actions">
-    <div class="icon-btn">🔔</div>
+   
     <div class="avatar-btn" onclick="location.href='../../html/dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>
