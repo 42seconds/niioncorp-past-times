@@ -13,9 +13,13 @@ echo "========================\n\n";
 if ($reset) {
     echo "⚠  RESET requested — dropping existing tables...\n";
     $conn->query("DROP TABLE IF EXISTS tblOrderItems");
+     $conn->query("DROP TABLE IF EXISTS tblCart");
     $conn->query("DROP TABLE IF EXISTS tblOrders");
     $conn->query("DROP TABLE IF EXISTS tblListings");
     $conn->query("DROP TABLE IF EXISTS tblUser");
+    $conn->query("DROP TABLE IF EXISTS tblFavourites");
+   
+    $conn->query("DROP TABLE IF EXISTS tblMessages");
     echo "✔  All tables dropped.\n\n";
 }
 
@@ -110,6 +114,32 @@ CREATE TABLE IF NOT EXISTS tblFavourites (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ") or die("✘ tblFavourites failed: " . $conn->error . "\n");
 echo "✔  tblFavourites — ready.\n\n";
+
+
+// tblCart
+$conn->query("
+CREATE TABLE IF NOT EXISTS tblCart (
+    cartID      INT NOT NULL AUTO_INCREMENT,
+    userID      INT NOT NULL,
+    listingID   INT NOT NULL,
+    quantity    INT NOT NULL DEFAULT 1,
+    note        TEXT DEFAULT NULL,
+    addedAt     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cartID),
+
+    UNIQUE KEY unique_cart_item (userID, listingID),
+
+    FOREIGN KEY (userID)
+        REFERENCES tblUser(userID)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (listingID)
+        REFERENCES tblListings(listingID)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+") or die("✘ tblCart failed: " . $conn->error . "\n");
+
+echo "✔  tblCart — ready.\n\n";
 
 
 

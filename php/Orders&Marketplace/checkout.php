@@ -22,7 +22,6 @@ $stmt->execute();
 $listing = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-
 if (!$listing) { header('Location: ../../html/home.php'); exit; }
 
 // Block seller from buying anything (own item OR another seller's item)
@@ -41,11 +40,16 @@ $orderID = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deliveryMethod  = htmlspecialchars(trim($_POST['deliveryMethod']  ?? ''));
     $deliveryAddress = htmlspecialchars(trim($_POST['deliveryAddress'] ?? ''));
+    $quantity        = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
     $buyerID         = (int)$_SESSION['userID'];
     $sellerID        = (int)$listing['sellerUID'];
-    $total           = (float)$listing['price'];
+    $unitPrice       = (float)$listing['price'];
+    $total           = $unitPrice * $quantity;
 
-    if (!$deliveryMethod) {
+    // Validate quantity
+    if ($quantity < 1) {
+        $error = "Quantity must be at least 1.";
+    } elseif (!$deliveryMethod) {
         $error = "Please select a delivery method.";
     } elseif (!$deliveryAddress) {
         $error = "Please enter a delivery address or PUDO locker number.";
@@ -53,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ins = $conn->prepare("
             INSERT INTO tblOrders
               (buyerID, listingID, sellerID, quantity, totalPrice, deliveryMethod, deliveryAddress, status, createdAt)
-            VALUES (?, ?, ?, 1, ?, ?, ?, 'paid', NOW())
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'paid', NOW())
         ");
-        $ins->bind_param("iiidss", $buyerID, $listingID, $sellerID, $total, $deliveryMethod, $deliveryAddress);
+        $ins->bind_param("iiidiss", $buyerID, $listingID, $sellerID, $quantity, $total, $deliveryMethod, $deliveryAddress);
         if ($ins->execute()) {
             $orderID = $conn->insert_id;
             $success = true;
@@ -80,8 +84,7 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
-      <link rel="stylesheet" href="../../css/responsive.css">
-
+  <link rel="stylesheet" href="../../css/responsive.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body{background:var(--cream);font-family:var(--font-body);}
@@ -104,6 +107,9 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
     .success-icon{font-size:64px;margin-bottom:20px;}
     .success-title{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:8px;}
     .success-sub{color:var(--text-muted);font-size:15px;margin-bottom:28px;line-height:1.6;}
+    .qty-btn{background:none;border:1px solid var(--border);border-radius:4px;width:32px;height:32px;cursor:pointer;font-size:18px;font-weight:600;transition:all 0.2s;}
+    .qty-btn:hover{background:var(--primary);color:white;border-color:var(--primary);}
+    .qty-display{font-size:20px;font-weight:700;min-width:40px;text-align:center;}
     @media(max-width:700px){.checkout-wrap{grid-template-columns:1fr;}}
   </style>
 </head>
@@ -115,7 +121,6 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
     <a class="nav-link" href="../../html/favorites.php">Favourites</a>
   </div>
   <div class="navbar-actions">
-   
     <div class="avatar-btn" onclick="location.href='../../html/dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>
@@ -123,7 +128,6 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
 <?php if ($success): ?>
 <!-- SUCCESS STATE -->
 <div class="success-wrap">
-  <!-- <div class="success-icon">🎉</div> -->
   <div class="success-title">Order Placed!</div>
   <div class="success-sub">
     Your order for <strong><?= htmlspecialchars($listing['title']) ?></strong> has been placed successfully.
@@ -139,7 +143,6 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
     <a href="../../html/home.php" class="btn btn-secondary">Keep Shopping</a>
   </div>
 </div>
-
 
 <?php else: ?>
 <!-- CHECKOUT FORM -->
@@ -164,8 +167,7 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
         <div class="alert-error"><?= $error ?></div>
       <?php endif; ?>
 
-
-       <form method="POST" action="checkout.php?id=<?= $listingID ?>">
+      <form method="POST" action="checkout.php?id=<?= $listingID ?>">
 
         <!-- Order Summary -->
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px;">ITEM</div>
@@ -183,6 +185,19 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
             <div style="font-size:13px;color:var(--text-muted);">by @<?= htmlspecialchars($listing['username']) ?></div>
           </div>
           <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--primary);">R <?= number_format($listing['price'],2) ?></div>
+        </div>
+
+        <!-- QUANTITY SELECTOR (NEW) -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px;">QUANTITY</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;background:var(--bg-warm);padding:12px 16px;border-radius:var(--radius);">
+          <button type="button" class="qty-btn" onclick="adjustQuantity(-1)">−</button>
+          <span id="qtyDisplay" class="qty-display">1</span>
+          <button type="button" class="qty-btn" onclick="adjustQuantity(1)">+</button>
+          <input type="hidden" name="quantity" id="quantityInput" value="1">
+          <span style="font-size:14px;color:var(--text-muted);margin-left:8px;">
+            × R <?= number_format($listing['price'],2) ?> = 
+            <strong id="totalDisplay" style="color:var(--primary);font-size:16px;">R <?= number_format($listing['price'],2) ?></strong>
+          </span>
         </div>
 
         <!-- Delivery Method -->
@@ -220,7 +235,7 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
 
         <div class="escrow-badge">🛡 Your payment is held in <strong>secure escrow</strong> and only released to the seller once you confirm receipt of your item.</div>
 
-        <button class="btn btn-primary btn-lg" type="submit" style="width:100%;">
+        <button class="btn btn-primary btn-lg" type="submit" id="placeOrderBtn" style="width:100%;">
           Place Order — R <?= number_format($listing['price'],2) ?>
         </button>
         <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">By placing this order you agree to our Terms of Service.</div>
@@ -228,16 +243,28 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
     </div>
   </div>
 
-
-
   <!-- RIGHT: PRICE SUMMARY -->
- <div>
+  <div>
     <div class="checkout-card">
       <div class="checkout-title" style="font-size:18px;">Order Summary</div>
-      <div class="price-row"><span>Item price</span><span>R <?= number_format($listing['price'],2) ?></span></div>
+      <div class="price-row">
+        <span>Item price</span>
+        <span>R <?= number_format($listing['price'],2) ?></span>
+      </div>
+      <div class="price-row" id="quantityRow">
+        <span>Quantity</span>
+        <span id="summaryQty">1</span>
+      </div>
+      <div class="price-row" id="subtotalRow">
+        <span>Subtotal</span>
+        <span id="summarySubtotal">R <?= number_format($listing['price'],2) ?></span>
+      </div>
       <div class="price-row"><span>Platform fee</span><span style="color:#1a5c35;">Free 🌿</span></div>
       <div class="price-row"><span>Delivery</span><span>Calculated at delivery</span></div>
-      <div class="price-row" style="margin-top:8px;"><span>Total</span><span>R <?= number_format($listing['price'],2) ?></span></div>
+      <div class="price-row" style="margin-top:8px;">
+        <span><strong>Total</strong></span>
+        <span><strong id="summaryTotal">R <?= number_format($listing['price'],2) ?></strong></span>
+      </div>
 
       <div style="margin-top:20px;background:var(--bg-warm);border-radius:var(--radius);padding:14px;">
         <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">Seller</div>
@@ -264,6 +291,61 @@ $deliveryOptions = array_filter(array_map('trim', explode(',', $listing['deliver
 </div>
 <?php endif; ?>
 
+<script>
+// Quantity adjustment function
+function adjustQuantity(change) {
+    const display = document.getElementById('qtyDisplay');
+    const input = document.getElementById('quantityInput');
+    let currentQty = parseInt(display.textContent) || 1;
+    let newQty = currentQty + change;
+    
+    // Minimum quantity is 1
+    if (newQty < 1) {
+        newQty = 1;
+        return;
+    }
+    
+    // Maximum quantity limit (optional - set to 99 or whatever you prefer)
+    if (newQty > 99) {
+        newQty = 99;
+        return;
+    }
+    
+    // Update display
+    display.textContent = newQty;
+    input.value = newQty;
+    
+    // Update all totals
+    updateTotals(newQty);
+}
+
+// Update all price displays
+function updateTotals(quantity) {
+    const unitPrice = <?= $listing['price'] ?>;
+    const total = unitPrice * quantity;
+    
+    // Update summary section
+    document.getElementById('summaryQty').textContent = quantity;
+    document.getElementById('summarySubtotal').textContent = 'R ' + total.toFixed(2);
+    document.getElementById('summaryTotal').textContent = 'R ' + total.toFixed(2);
+    
+    // Update total display next to quantity selector
+    document.getElementById('totalDisplay').textContent = 'R ' + total.toFixed(2);
+    
+    // Update the place order button
+    document.getElementById('placeOrderBtn').textContent = 'Place Order — R ' + total.toFixed(2);
+}
+
+// Initialize delivery option selection
+document.addEventListener('DOMContentLoaded', function() {
+    // Select first delivery option by default
+    const firstRadio = document.querySelector('.delivery-opt input[type="radio"]');
+    if (firstRadio) {
+        firstRadio.checked = true;
+        firstRadio.closest('.delivery-opt').classList.add('selected');
+    }
+});
+</script>
 
 <script src="../../javascript/script.js"></script>
 </body>

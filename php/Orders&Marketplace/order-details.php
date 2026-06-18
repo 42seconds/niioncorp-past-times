@@ -12,7 +12,7 @@ $initials = strtoupper(substr($_SESSION['firstName'],0,1).substr($_SESSION['last
 
 $stmt = $conn->prepare("
     SELECT o.*, l.title, l.imagePath, l.category, l.condition_, l.description,
-           l.listingID, u.username AS sellerName, u.firstName AS sellerFirst, u.lastName AS sellerLast
+           l.listingID, l.price AS unitPrice, u.username AS sellerName, u.firstName AS sellerFirst, u.lastName AS sellerLast
     FROM tblOrders o
     JOIN tblListings l ON o.listingID = l.listingID
     JOIN tblUser u     ON o.sellerID  = u.userID
@@ -26,6 +26,10 @@ $stmt->close();
 
 if (!$order) { header('Location: orders.php'); exit; }
 
+// Calculate unit price (total / quantity)
+$quantity = $order['quantity'] ?? 1;
+$unitPrice = $order['unitPrice'] ?? ($order['totalPrice'] / $quantity);
+
 // Handle confirm delivery
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -38,16 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $conn->query("UPDATE tblOrders SET status='cancelled' WHERE orderID=$orderID AND buyerID=$buyerID");
         $order['status'] = 'cancelled';
         $msg = 'cancelled';
+    } elseif ($action === 'pay' && $order['status'] === 'pending') {
+        $conn->query("UPDATE tblOrders 
+                      SET status='paid' 
+                      WHERE orderID=$orderID AND buyerID=$buyerID");
+        $order['status'] = 'paid';
+        $msg = 'paid';
     }
-
-    if ($action === 'pay' && $order['status'] === 'pending') {
-    $conn->query("UPDATE tblOrders 
-                  SET status='paid' 
-                  WHERE orderID=$orderID AND buyerID=$buyerID");
-
-    $order['status'] = 'paid';
-    $msg = 'paid';
-}
 }
 $conn->close();
 
@@ -71,20 +72,14 @@ $timeline = [
 $statusOrder = ['pending','paid','shipped','delivered','cancelled','refunded'];
 $currentIdx  = array_search($order['status'], $statusOrder);
 
-
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order #<?= $orderID ?> – Past Times</title>
   <link rel="stylesheet" href="../../css/styles.css">
-      <link rel="stylesheet" href="../css/responsive.css">
-
+  <link rel="stylesheet" href="../css/responsive.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body{background:var(--cream);font-family:var(--font-body);}
@@ -103,11 +98,13 @@ $currentIdx  = array_search($order['status'], $statusOrder);
     .timeline-label.done,.timeline-label.active{color:var(--dark);}
     /* Item row */
     .item-row{display:flex;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--border-light);}
+    .item-row:last-child{border-bottom:none;}
     .item-thumb{width:64px;height:64px;border-radius:8px;background:var(--bg-warm);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;flex-shrink:0;}
     .item-thumb img{width:100%;height:100%;object-fit:cover;}
     .info-row{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid var(--border-light);}
     .info-row:last-child{border-bottom:none;}
     .alert-success{background:#e6faf0;border:1px solid #b2dbd7;color:#1a5c35;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px;}
+    .quantity-badge{display:inline-block;background:var(--bg-warm);padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600;color:var(--text-muted);}
     @media(max-width:700px){.detail-wrap{grid-template-columns:1fr;}}
   </style>
 </head>
@@ -119,7 +116,6 @@ $currentIdx  = array_search($order['status'], $statusOrder);
     <a class="nav-link" href="orders.php">My Orders</a>
   </div>
   <div class="navbar-actions">
-   
     <div class="avatar-btn" onclick="location.href='../../html/dashboard.php'"><?= $initials ?></div>
   </div>
 </nav>
@@ -135,9 +131,11 @@ $currentIdx  = array_search($order['status'], $statusOrder);
   <div>
 
     <?php if ($msg === 'delivery_confirmed'): ?>
-      <div class="alert-success"> Delivery confirmed! Your escrow funds have been released to the seller. Thank you for shopping on Past Times.</div>
+      <div class="alert-success">✅ Delivery confirmed! Your escrow funds have been released to the seller. Thank you for shopping on Past Times.</div>
     <?php elseif ($msg === 'cancelled'): ?>
-      <div class="alert-success" style="background:#fce8e8;border-color:#f5b7b7;color:#8b1a14;">Order cancelled. A refund will be processed within 3–5 business days if payment was made.</div>
+      <div class="alert-success" style="background:#fce8e8;border-color:#f5b7b7;color:#8b1a14;">✕ Order cancelled. A refund will be processed within 3–5 business days if payment was made.</div>
+    <?php elseif ($msg === 'paid'): ?>
+      <div class="alert-success">💳 Payment confirmed! The seller will ship your item within 48 hours.</div>
     <?php endif; ?>
 
     <!-- STATUS + TIMELINE -->
@@ -169,21 +167,32 @@ $currentIdx  = array_search($order['status'], $statusOrder);
       <?php endif; ?>
     </div>
 
-    <!-- ITEM -->
+    <!-- ITEM WITH QUANTITY -->
     <div class="detail-card">
       <div class="detail-title">Item</div>
       <div class="item-row">
         <div class="item-thumb">
           <?php if (!empty($order['imagePath'])): ?>
             <img src="../../<?= htmlspecialchars($order['imagePath']) ?>" alt="">
+          <?php else: ?>
+            📦
           <?php endif; ?>
         </div>
         <div style="flex:1;">
           <div style="font-weight:600;font-size:16px;"><?= htmlspecialchars($order['title']) ?></div>
-          <div style="font-size:13px;color:var(--text-muted);margin-top:2px;"><?= htmlspecialchars($order['category']) ?> • <?= htmlspecialchars($order['condition_']) ?></div>
-          <a href="../../html/product-detail.php?id=<?= $order['listingID'] ?>" style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none;">View Listing →</a>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">
+            <?= htmlspecialchars($order['category']) ?> • <?= htmlspecialchars($order['condition_']) ?>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">
+            <span class="quantity-badge">Qty: <?= $quantity ?></span>
+            <span style="margin-left:8px;">× R <?= number_format($unitPrice, 2) ?></span>
+          </div>
+          <a href="../../html/product-detail.php?id=<?= $order['listingID'] ?>" style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none;display:inline-block;margin-top:4px;">View Listing →</a>
         </div>
-        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--primary);">R <?= number_format($order['totalPrice'],2) ?></div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--primary);">R <?= number_format($order['totalPrice'],2) ?></div>
+          <div style="font-size:11px;color:var(--text-muted);"><?= $quantity ?> × R <?= number_format($unitPrice, 2) ?></div>
+        </div>
       </div>
     </div>
 
@@ -206,18 +215,18 @@ $currentIdx  = array_search($order['status'], $statusOrder);
           <input type="hidden" name="action" value="confirm_delivery">
           <button class="btn btn-primary" type="submit"
             onclick="return confirm('Confirm you have received the item? This will release escrow funds to the seller.')">
-            Confirm Delivery
+            ✅ Confirm Delivery
           </button>
         </form>
-        
         <?php endif; ?>
+
         <?php if ($order['status'] === 'pending'): ?>
-            <form method="POST">
-            <input type="hidden" name="action" value="pay">
-            <button class="btn btn-primary" type="submit">
-            Pay Now
-            </button>
-            </form>
+        <form method="POST">
+          <input type="hidden" name="action" value="pay">
+          <button class="btn btn-primary" type="submit">
+            💳 Pay Now — R <?= number_format($order['totalPrice'],2) ?>
+          </button>
+        </form>
         <?php endif; ?>
 
         <?php if (in_array($order['status'], ['pending','paid'])): ?>
@@ -230,7 +239,6 @@ $currentIdx  = array_search($order['status'], $statusOrder);
         </form>
         <?php endif; ?>
 
-       <!-- <a href="../../html/messages.php?seller=<?= $order['sellerID'] ?>" class="btn btn-secondary"> Message Seller</a> -->
         <a href="orders.php" class="btn btn-secondary">← Back to Orders</a>
       </div>
     </div>
@@ -241,12 +249,32 @@ $currentIdx  = array_search($order['status'], $statusOrder);
   <div>
     <div class="detail-card">
       <div class="detail-title" style="font-size:16px;">Order Summary</div>
-      <div class="info-row"><span style="color:var(--text-muted);">Item</span><span>R <?= number_format($order['totalPrice'],2) ?></span></div>
-      <div class="info-row"><span style="color:var(--text-muted);">Platform fee</span><span style="color:#1a5c35;">Free</span></div>
-      <div class="info-row" style="font-weight:700;font-size:15px;"><span>Total</span><span>R <?= number_format($order['totalPrice'],2) ?></span></div>
+      
+      <div class="info-row">
+        <span style="color:var(--text-muted);">Unit Price</span>
+        <span>R <?= number_format($unitPrice, 2) ?></span>
+      </div>
+      
+      <div class="info-row">
+        <span style="color:var(--text-muted);">Quantity</span>
+        <span>× <?= $quantity ?></span>
+      </div>
+      
+      <div class="info-row" style="font-weight:600;border-bottom:1px solid var(--border-light);">
+        <span style="color:var(--text-muted);">Subtotal</span>
+        <span>R <?= number_format($order['totalPrice'], 2) ?></span>
+      </div>
+      
+      <div class="info-row"><span style="color:var(--text-muted);">Platform fee</span><span style="color:#1a5c35;">Free 🌿</span></div>
+      <div class="info-row"><span style="color:var(--text-muted);">Delivery</span><span>Included</span></div>
+      
+      <div class="info-row" style="font-weight:700;font-size:16px;border-top:2px solid var(--border-light);padding-top:12px;margin-top:4px;">
+        <span>Total</span>
+        <span style="color:var(--primary);">R <?= number_format($order['totalPrice'],2) ?></span>
+      </div>
 
       <div style="margin-top:16px;background:#e6faf0;border:1px solid #b2dbd7;border-radius:8px;padding:12px;font-size:13px;color:#1a5c35;">
-        Funds are being held in secure escrow until you confirm the delivery.
+        🛡 Funds are being held in secure escrow until you confirm the delivery.
       </div>
     </div>
 
@@ -262,10 +290,18 @@ $currentIdx  = array_search($order['status'], $statusOrder);
         </div>
       </div>
     </div>
+    
+    <!-- Order Items Summary Card (for multi-item orders in future) -->
+    <div class="detail-card" style="background:var(--bg-warm);border-color:var(--border-light);">
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.8;">
+        <div>📦 Order #<?= $orderID ?></div>
+        <div>🛡 Escrow Protected via Ozow</div>
+        <div>📅 <?= date('d M Y', strtotime($order['createdAt'])) ?></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="../../javascript/script.js"></script>
 </body>
 </html>
-

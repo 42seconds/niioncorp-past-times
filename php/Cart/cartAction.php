@@ -19,7 +19,12 @@ if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['seller', 'admin'])
 }
 
 // Check if listing exists and is available
-$s = $conn->prepare("SELECT sellerID FROM tblListings WHERE listingID=? AND status='approved'");
+$s = $conn->prepare("
+    SELECT sellerID
+    FROM tblListings
+    WHERE listingID = ?
+      AND status = 'approved'
+");
 $s->bind_param("i", $listingID);
 $s->execute();
 $listing = $s->get_result()->fetch_assoc();
@@ -30,61 +35,126 @@ if (!$listing) {
     exit;
 }
 
-// Check if user is trying to buy their own listing
-if (isset($_SESSION['userID']) && (int)$listing['sellerID'] === (int)$_SESSION['userID']) {
+// Prevent users buying their own listings
+if (
+    isset($_SESSION['userID']) &&
+    (int)$listing['sellerID'] === (int)$_SESSION['userID']
+) {
     echo json_encode(['error' => 'own_listing']);
     exit;
 }
 
-// LOGGED IN USER
+// =========================
+// LOGGED-IN USER
+// =========================
 if (isset($_SESSION['userID'])) {
+
     $userID = (int)$_SESSION['userID'];
-    
+
     if ($action === 'add') {
-        $ins = $conn->prepare("INSERT INTO tblCart (userID, listingID) VALUES (?, ?) ON DUPLICATE KEY UPDATE addedAt=NOW()");
+
+        $ins = $conn->prepare("
+            INSERT INTO tblCart
+                (userID, listingID, quantity)
+            VALUES
+                (?, ?, 1)
+            ON DUPLICATE KEY UPDATE
+                quantity = quantity + 1,
+                addedAt = NOW()
+        ");
+
         $ins->bind_param("ii", $userID, $listingID);
         $ins->execute();
         $ins->close();
-        
-        $cnt = $conn->query("SELECT COUNT(*) c FROM tblCart WHERE userID=$userID")->fetch_assoc()['c'];
-        echo json_encode(['action' => 'added', 'cartCount' => (int)$cnt]);
+
+        $cnt = $conn->query("
+            SELECT COALESCE(SUM(quantity),0) AS c
+            FROM tblCart
+            WHERE userID = $userID
+        ")->fetch_assoc()['c'];
+
+        echo json_encode([
+            'action' => 'added',
+            'cartCount' => (int)$cnt
+        ]);
     } elseif ($action === 'remove') {
-        $d = $conn->prepare("DELETE FROM tblCart WHERE userID=? AND listingID=?");
+
+        $d = $conn->prepare("
+            DELETE FROM tblCart
+            WHERE userID = ?
+              AND listingID = ?
+        ");
+
         $d->bind_param("ii", $userID, $listingID);
         $d->execute();
         $d->close();
-        
-        $cnt = $conn->query("SELECT COUNT(*) c FROM tblCart WHERE userID=$userID")->fetch_assoc()['c'];
-        echo json_encode(['action' => 'removed', 'cartCount' => (int)$cnt]);
+
+        $cnt = $conn->query("
+            SELECT COALESCE(SUM(quantity),0) AS c
+            FROM tblCart
+            WHERE userID = $userID
+        ")->fetch_assoc()['c'];
+
+        echo json_encode([
+            'action' => 'removed',
+            'cartCount' => (int)$cnt
+        ]);
     } elseif ($action === 'update') {
+
         $note = htmlspecialchars(trim($_POST['note'] ?? ''));
-        $u = $conn->prepare("UPDATE tblCart SET note=? WHERE userID=? AND listingID=?");
+
+        $u = $conn->prepare("
+            UPDATE tblCart
+            SET note = ?
+            WHERE userID = ?
+              AND listingID = ?
+        ");
+
         $u->bind_param("sii", $note, $userID, $listingID);
         $u->execute();
         $u->close();
-        echo json_encode(['action' => 'updated']);
+
+        echo json_encode([
+            'action' => 'updated'
+        ]);
+    } else {
+        echo json_encode(['error' => 'unknown_action']);
     }
-    
+
     $conn->close();
     exit;
 }
 
-// GUEST USER - Store in session
+// =========================
+// GUEST USER
+// =========================
+
 if (!isset($_SESSION['guest_cart'])) {
     $_SESSION['guest_cart'] = [];
 }
 
 if ($action === 'add') {
-    if (!in_array($listingID, $_SESSION['guest_cart'])) {
-        $_SESSION['guest_cart'][] = $listingID;
+
+    if (isset($_SESSION['guest_cart'][$listingID])) {
+        $_SESSION['guest_cart'][$listingID]++;
+    } else {
+        $_SESSION['guest_cart'][$listingID] = 1;
     }
-    echo json_encode(['action' => 'guest_added', 'guestCount' => count($_SESSION['guest_cart'])]);
+
+    echo json_encode([
+        'action' => 'guest_added',
+        'guestCount' => array_sum($_SESSION['guest_cart'])
+    ]);
 } elseif ($action === 'remove') {
-    $_SESSION['guest_cart'] = array_diff($_SESSION['guest_cart'], [$listingID]);
-    echo json_encode(['action' => 'guest_removed', 'guestCount' => count($_SESSION['guest_cart'])]);
+
+    unset($_SESSION['guest_cart'][$listingID]);
+
+    echo json_encode([
+        'action' => 'guest_removed',
+        'guestCount' => array_sum($_SESSION['guest_cart'])
+    ]);
 } else {
     echo json_encode(['error' => 'unknown_action']);
 }
 
 $conn->close();
-?>
